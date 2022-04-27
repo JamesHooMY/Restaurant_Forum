@@ -7,13 +7,14 @@
   <title>Restaurant World</title>
   <link rel="stylesheet" href="/css/bootstrap.css">
   <link rel="stylesheet" href="/css/all.css">
-<body>
+<body class="d-flex flex-column h-100 bg-light">
   {{> header}}
-  <main>
+  <main class="flex-shrink-0" role="main">
     <div class="container mt-3">
       {{{body}}}
     </div>
   </main>
+  {{> footer}}
 </body>
   <script src="/js/popper.min.js"></script>
   <script src="/js/bootstrap.js"></script>
