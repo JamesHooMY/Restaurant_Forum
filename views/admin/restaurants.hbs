@@ -9,7 +9,8 @@
     <tr>
       <th scope='col'>#</th>
       <th scope='col'>Name</th>
-      <th scope='col'></th>
+      <th scope='col'>Telephone</th>
+      <th scope='col'>Functions</th>
     </tr>
   </thead>
   <tbody>
@@ -17,32 +18,26 @@
       <tr>
         <th scope='row'>{{this.id}}</th>
         <td>{{this.name}}</td>
+        <td>{{this.tel}}</td>
         <td>
-          <button type='button' class='btn btn-link'>
-            <a
-              class='btn btn-link link-primary'
-              href='/admin/restaurants/{{this.id}}'
-            >
-              Show
-            </a>
-          </button>
-          <button type='button' class='btn btn-link'>
-            <a
-              class='btn btn-link link-primary'
-              href='/admin/restaurants/{{this.id}}/edit'
-            >
-              Edit
-            </a>
-          </button>
+          <a
+            class='btn btn-outline-secondary me-3'
+            href='/admin/restaurants/{{this.id}}'
+          >
+            Details
+          </a>
+          <a
+            class='btn btn-outline-success me-3'
+            href='/admin/restaurants/{{this.id}}/edit'
+          >
+            Edit
+          </a>
           <form
             action='/admin/restaurants/{{this.id}}?_method=DELETE'
             method='POST'
             style='display: inline;'
           >
-            <button
-              type='submit'
-              class='btn btn-link link-danger'
-            >Delete</button>
+            <button type='submit' class='btn btn-outline-danger'>Delete</button>
           </form>
         </td>
       </tr>
