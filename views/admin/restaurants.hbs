@@ -38,7 +38,7 @@
             method='POST'
             style='display: inline;'
           >
-            <button type='submit' class='btn btn-outline-danger'>Delete</button>
+            <button type='submit' class='btn btn-outline-danger' onclick="return confirm(`Confirm to delete {{ this.name }} ？`)">Delete</button>
           </form>
         </td>
       </tr>
