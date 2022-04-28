@@ -3,6 +3,8 @@ const router = express.Router()
 
 const adminController = require('../../controllers/admin-controllers')
 
+router.get('/restaurant/create', adminController.createRestaurant)
+router.post('/restaurant', adminController.postRestaurant)
 router.get('/restaurants', adminController.getRestaurants)
 router.get('/', (req, res) => res.redirect('/admin/restaurants'))
 

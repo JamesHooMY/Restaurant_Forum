@@ -1,5 +1,6 @@
-<h1 class='fw-bold'> admin Restaurants</h1>
-<a href='/admin/restaurants/create'>
+<h1 class='fw-bold text-center'> Restaurants World Backend Management</h1>
+{{> messages}}
+<a href='/admin/restaurant/create'>
   <button type='button' class='btn btn-outline-primary'>New Restaurant</button>
 </a>
 <br />
@@ -22,18 +23,18 @@
         <td>
           <a
             class='btn btn-outline-secondary me-3'
-            href='/admin/restaurants/{{this.id}}'
+            href='/admin/restaurant/{{this.id}}'
           >
             Details
           </a>
           <a
             class='btn btn-outline-success me-3'
-            href='/admin/restaurants/{{this.id}}/edit'
+            href='/admin/restaurant/{{this.id}}/edit'
           >
             Edit
           </a>
           <form
-            action='/admin/restaurants/{{this.id}}?_method=DELETE'
+            action='/admin/restaurant/{{this.id}}?_method=DELETE'
             method='POST'
             style='display: inline;'
           >
