@@ -39,14 +39,14 @@
   </div>
 {{/if}}
 {{#if success_messages}}
-  <svg
-    class='bi flex-shrink-0 me-2'
-    width='24'
-    height='24'
-    role='img'
-    aria-label='Success:'
-  ><use xlink:href='#check-circle-fill'></use></svg>
   <div class='alert alert-success alert-dismissible fade show' role='alert'>
+    <svg
+      class='bi flex-shrink-0 me-2'
+      width='24'
+      height='24'
+      role='img'
+      aria-label='Success:'
+    ><use xlink:href='#check-circle-fill'></use></svg>
     {{success_messages}}
     <button
       type='button'
