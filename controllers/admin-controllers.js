@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models')
+const { Restaurant, Category } = require('../models')
 const {
   localFileHandler,
   imgurFileHandler,
@@ -7,7 +7,7 @@ const imgur = require('imgur')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
-    return Restaurant.findAll({ raw: true })
+    return Restaurant.findAll({ raw: true, nest: true, include: [Category] })
       .then((restaurants) => res.render('admin/restaurants', { restaurants }))
       .catch((err) => next(err))
   },
@@ -69,7 +69,7 @@ const adminController = {
         const filePath = file.link
         const deleteHash = file.deletehash
         if (!restaurant) throw new Error('Restaurant is not exist!')
-        if (deleteHash) await imgur.deleteImage(restaurant.deleteHash)
+        if (deleteHash) imgur.deleteImage(restaurant.deleteHash)
         return restaurant.update({
           name,
           tel,
