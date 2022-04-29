@@ -1,5 +1,9 @@
 const { Restaurant } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers')
+const {
+  localFileHandler,
+  imgurFileHandler,
+} = require('../helpers/file-helpers')
+const imgur = require('imgur')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -14,17 +18,20 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req // multer process image in to "req.file"
-    return localFileHandler(file)
-      .then((filePath) =>
-        Restaurant.create({
+    return imgurFileHandler(file)
+      .then((file) => {
+        const filePath = file.link
+        const deleteHash = file.deletehash
+        return Restaurant.create({
           name,
           tel,
           address,
           openingHours,
           description,
           image: filePath || null,
+          deleteHash: deleteHash || null,
         })
-      )
+      })
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created!')
         res.redirect('/admin/restaurants')
@@ -40,7 +47,7 @@ const adminController = {
       })
       .catch((err) => next(err))
   },
-  editRestaurant: (req, res) => {
+  editRestaurant: (req, res, next) => {
     const restaurantId = req.params.id
     return Restaurant.findByPk(restaurantId, { raw: true })
       .then((restaurant) => {
@@ -49,17 +56,20 @@ const adminController = {
       })
       .catch((err) => next(err))
   },
-  putRestaurant: (req, res) => {
+  putRestaurant: (req, res, next) => {
     const restaurantId = req.params.id
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
     return Promise.all([
       Restaurant.findByPk(restaurantId),
-      localFileHandler(file),
+      imgurFileHandler(file),
     ])
-      .then(([restaurant, filePath]) => {
+      .then(async ([restaurant, file]) => {
+        const filePath = file.link
+        const deleteHash = file.deletehash
         if (!restaurant) throw new Error('Restaurant is not exist!')
+        if (deleteHash) await imgur.deleteImage(restaurant.deleteHash)
         return restaurant.update({
           name,
           tel,
@@ -67,6 +77,7 @@ const adminController = {
           openingHours,
           description,
           image: filePath || restaurant.image,
+          deleteHash: deleteHash || restaurant.deleteHash,
         })
       })
       .then(() => {
@@ -75,7 +86,7 @@ const adminController = {
       })
       .catch((err) => next(err))
   },
-  deleteRestaurant: (req, res) => {
+  deleteRestaurant: (req, res, next) => {
     const restaurantId = req.params.id
     return Restaurant.findByPk(restaurantId)
       .then((restaurant) => {
