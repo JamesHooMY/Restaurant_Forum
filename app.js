@@ -5,6 +5,7 @@ const express = require('express')
 const methodOverride = require('method-override')
 const flash = require('connect-flash')
 const session = require('express-session')
+const path = require('path')
 
 const { create } = require('express-handlebars')
 const { getUser } = require('./helpers/auth-helpers')
@@ -25,6 +26,7 @@ app.set('view engine', 'hbs')
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static('public'))
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use(methodOverride('_method'))
 app.use(
   session({
