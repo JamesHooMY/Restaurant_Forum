@@ -9,6 +9,20 @@ const categoryController = {
       })
       .catch((err) => next(err))
   },
+  postCategory: (req, res, next) => {
+    const { name } = req.body
+    if (!name) throw new Error('Category name is required!')
+    return Category.findOne({ where: { name } })
+      .then((category) => {
+        if (category) throw new Error('Category is exist!')
+        return Category.create({ name })
+      })
+      .then(() => {
+        req.flash('success_messages', 'Category was successfully created!')
+        res.redirect('/admin/categories')
+      })
+      .catch((err) => next(err))
+  },
 }
 
 module.exports = categoryController
