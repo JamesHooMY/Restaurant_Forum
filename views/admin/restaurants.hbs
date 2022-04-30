@@ -1,14 +1,17 @@
-<h1 class='fw-bold text-center'> Restaurants World Backend Management</h1>
 {{> messages}}
-<a href='/admin/restaurant/create'>
-  <button type='button' class='btn btn-outline-primary'>New Restaurant</button>
-</a>
-<br />
-<br />
+{{> admin-tabs route='restaurants'}}
+<div class="row">
+    <div class="col d-flex justify-content-center">
+      <a class="btn btn-outline-primary" href='/admin/restaurant/create'>
+        New Restaurant
+      </a>
+    </div>
+</div>
+</br>
 <table class='table align-middle'>
   <thead class='thead-dark'>
     <tr>
-      <th scope='col'>#</th>
+      <th scope='col'>Id</th>
       <th scope='col'>Name</th>
       <th scope='col'>Category</th>
       <th scope='col'>Telephone</th>

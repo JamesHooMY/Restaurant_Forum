@@ -3,7 +3,9 @@ const router = express.Router()
 
 const upload = require('../../middleware/multer')
 const adminController = require('../../controllers/admin-controllers')
+const categoryController = require('../../controllers/category-controllers')
 
+router.get('/categories', categoryController.getCategories)
 router.get('/restaurant/create', adminController.createRestaurant)
 router.post(
   '/restaurant',
