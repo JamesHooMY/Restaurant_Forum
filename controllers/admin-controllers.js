@@ -12,16 +12,21 @@ const adminController = {
       .catch((err) => next(err))
   },
   createRestaurant: (req, res) => {
-    res.render('admin/create-restaurant')
+    return Category.findAll({ raw: true })
+      .then((categories) =>
+        res.render('admin/create-restaurant', { categories })
+      )
+      .catch((err) => next(err))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } =
+      req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req // multer process image in to "req.file"
     return imgurFileHandler(file)
       .then((file) => {
-        const filePath = file.link
-        const deleteHash = file.deletehash
+        const filePath = file?.link || null
+        const deleteHash = file?.deletehash || null
         return Restaurant.create({
           name,
           tel,
@@ -30,6 +35,7 @@ const adminController = {
           description,
           image: filePath || null,
           deleteHash: deleteHash || null,
+          categoryId,
         })
       })
       .then(() => {
@@ -49,16 +55,20 @@ const adminController = {
   },
   editRestaurant: (req, res, next) => {
     const restaurantId = req.params.id
-    return Restaurant.findByPk(restaurantId, { raw: true })
-      .then((restaurant) => {
+    Promise.all([
+      Restaurant.findByPk(restaurantId, { raw: true }),
+      Category.findAll({ raw: true }),
+    ])
+      .then(([restaurant, categories]) => {
         if (!restaurant) throw new Error('Restaurant is not exist!')
-        res.render('admin/edit-restaurant', { restaurant })
+        res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch((err) => next(err))
   },
   putRestaurant: (req, res, next) => {
     const restaurantId = req.params.id
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } =
+      req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
     return Promise.all([
@@ -66,18 +76,19 @@ const adminController = {
       imgurFileHandler(file),
     ])
       .then(async ([restaurant, file]) => {
-        const filePath = file.link
-        const deleteHash = file.deletehash
         if (!restaurant) throw new Error('Restaurant is not exist!')
-        if (deleteHash) imgur.deleteImage(restaurant.deleteHash)
+        const filePath = file?.link || null
+        const deleteHash = file?.deletehash || null
+        if (deleteHash) await imgur.deleteImage(restaurant.deleteHash)
         return restaurant.update({
           name,
           tel,
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image,
+          image: filePath || null,
           deleteHash: deleteHash || restaurant.deleteHash,
+          categoryId,
         })
       })
       .then(() => {
