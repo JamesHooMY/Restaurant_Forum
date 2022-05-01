@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       image: DataTypes.STRING,
       deleteHash: DataTypes.STRING,
       categoryId: DataTypes.INTEGER,
+      viewCounts: DataTypes.INTEGER,
     },
     {
       sequelize,

@@ -1,11 +1,13 @@
 <div class='row mb-5'>
-  <div class='col-md-12'>
+  <div class='col-md-12 mb-3'>
     <h1>{{restaurant.name}}</h1>
-    <p>[{{restaurant.Category.name}}]</p>
   </div>
   <div class='col-md-4'>
+    <span
+      class='badge bg-dark px-3 py-2' {{#unless restaurant.Category.name}}style="color: red"{{/unless}}
+    >{{restaurant.Category.name}}{{#unless restaurant.Category.name}}Not currently classified{{/unless}}</span>
     <img
-      class='img-responsive center-block mb-5'
+      class='img-responsive center-block mt-3 mb-3 rounded'
       src='{{restaurant.image}}'
       style='width: 250px; transition: opacity 0.5s; opacity:0;'
       onload='this.style.opacity=1;'
@@ -16,6 +18,36 @@
         <li><strong>Tel:</strong> {{restaurant.tel}}</li>
         <li><strong>Address:</strong> {{restaurant.address}}</li>
       </ul>
+    </div>
+    <div class='d-flex flex-nowrap gap-3 mb-3'>
+      <button type="button" class="btn position-relative" disabled>
+        <i class="fa-solid fa-comment-dots fa-lg me-1" type="button" style="color:black"></i>
+        <span class="position-absolute top-50 start-100 translate-middle badge rounded-pill text-dark">
+          {{#if restaurant.viewCounts}}{{restaurant.viewCounts}}{{else}}0{{/if}}
+        </span>
+      </button>
+      <button type="button" class="btn position-relative" disabled>
+        <i class="fa-solid fa-eye fa-lg me-1" type="button" style="color:black"></i>
+        <span class="position-absolute top-50 start-100 translate-middle badge rounded-pill text-dark">
+          99+
+        </span>
+      </button>
+      <form action="/favorite/{{restaurant.id}}" method="POST">
+        <button type="submit" class="btn position-relative">
+          <i class="fa-solid fa-heart fa-lg me-1" type="button" style="color:red"></i>
+          <span class="position-absolute top-50 start-100 translate-middle badge rounded-pill text-dark">
+            99+
+          </span>
+        </button>
+      </form>
+      <form action="/like/{{this.id}}" method="POST">
+        <button type="submit" class="btn position-relative">
+          <i class="fa-solid fa-thumbs-up fa-lg me-1" type="button" style="color:blue"></i>
+          <span class="position-absolute top-50 start-100 translate-middle badge rounded-pill text-dark">
+            99+
+          </span>
+        </button>
+      </form>
     </div>
   </div>
   <div class='col-md-8'>
