@@ -3,14 +3,14 @@
   {{#each restaurants}}
     <div class="col-md-4">
       <div class="card mb-4 shadow-sm">
-        <a href="/restaurants/{{this.id}}">
+        <a href="/restaurant/{{this.id}}">
           <img class="card-img-top img-fluid" src="{{this.image}}" alt="Card image cap" width="286px" height="180px"
             style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
         </a>
         <div class="card-body">
           <div class="row">
             <p class="card-text col my-auto">
-              <a href="/restaurants/{{this.id}}" style="text-decoration: none;">{{this.name}}</a>
+              <a href="/restaurant/{{this.id}}" style="text-decoration: none;">{{this.name}}</a>
             </p>
             <span class="badge bg-dark col my-auto"{{#unless this.Category.name}}style="color: red"{{/unless}}>{{this.Category.name}}{{#unless this.Category.name}}Not currently classified{{/unless}}</span>
           </div>

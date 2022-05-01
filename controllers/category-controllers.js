@@ -10,6 +10,8 @@ const categoryController = {
         : null,
     ])
       .then(([categories, category]) => {
+        if (!categories) throw new Error('Categories are not exist!')
+        if (!category) throw new Error('Category is not exist!')
         res.render('admin/categories', { categories, category })
       })
       .catch((err) => next(err))
