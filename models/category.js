@@ -8,18 +8,24 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Category.hasMany(models.Restaurant, { foreignKey: 'categoryId' })
+      Category.hasMany(models.Restaurant, {
+        foreignKey: 'categoryId',
+        onDelete: 'CASCADE', // hard deleted
+        hooks: true, // hard deleted
+      })
     }
   }
   Category.init(
     {
       name: DataTypes.STRING,
+      deletedAt: DataTypes.DATE,
     },
     {
       sequelize,
       modelName: 'Category',
       tableName: 'Categories',
       underscored: true,
+      paranoid: true, // soft-delete migration:generate deleted-at
     }
   )
   return Category

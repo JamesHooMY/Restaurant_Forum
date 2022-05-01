@@ -4,8 +4,10 @@ const categoryController = {
   getCategories: (req, res, next) => {
     const categoryId = req.params.id
     return Promise.all([
-      Category.findAll({ raw: true }),
-      categoryId ? Category.findByPk(categoryId, { raw: true }) : null,
+      Category.findAll({ raw: true, paranoid: false }),
+      categoryId
+        ? Category.findByPk(categoryId, { raw: true, paranoid: false })
+        : null,
     ])
       .then(([categories, category]) => {
         res.render('admin/categories', { categories, category })
@@ -30,12 +32,42 @@ const categoryController = {
     const { name } = req.body
     const categoryId = req.params.id
     if (!name) throw new Error('Category name is required!')
-    return Category.findByPk(categoryId)
+    return Category.findByPk(categoryId, { paranoid: false })
       .then((category) => {
+        if (!category) throw new Error("Category didn't exist!")
         return category.update({ name })
       })
       .then(() => {
         req.flash('success_messages', 'Category was successfully updated!')
+        res.redirect('/admin/categories')
+      })
+      .catch((err) => next(err))
+  },
+  deleteCategory: (req, res, next) => {
+    const categoryId = req.params.id
+    const { softDelete } = req.body
+    return Category.findByPk(categoryId)
+      .then((category) => {
+        if (!category) throw new Error("Category didn't exist!")
+        return softDelete
+          ? category.destroy()
+          : category.destroy({ force: true })
+      })
+      .then(() => {
+        req.flash('success_messages', 'Category was successfully deleted!')
+        res.redirect('/admin/categories')
+      })
+      .catch((err) => next(err))
+  },
+  restoreCategory: (req, res, next) => {
+    const categoryId = req.params.id
+    return Category.findByPk(categoryId, { paranoid: false })
+      .then((category) => {
+        if (!category) throw new Error("Category didn't exist!")
+        return category.restore()
+      })
+      .then(() => {
+        req.flash('success_messages', 'Category was successfully restored!')
         res.redirect('/admin/categories')
       })
       .catch((err) => next(err))

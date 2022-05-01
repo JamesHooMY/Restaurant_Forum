@@ -8,7 +8,7 @@
     </div>
     <div class="col-auto">
       <button class="btn btn-warning me-3" type="submit">Update</button>
-      <a class='btn btn-secondary' href='javascript:history.back()'>Back</a>
+      <a class='btn btn-secondary' href='/admin/categories'>Back</a>
     </div>
   </form>
 </div>
@@ -44,9 +44,23 @@
               Edit
             </a>
           </button>
-          <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-            <button type="submit" class="btn btn-outline-danger me-3">Delete</button>
-          </form>
+          {{#if this.deletedAt}}
+            <form action="/admin/categories/{{this.id}}" method="POST" style="display: inline;">
+              <button type="submit" class="btn btn-outline-warning me-3" onclick="return confirm(`Confirm to restore {{this.name}} ?`)">Restore</button>
+            </form>
+            <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+              <input type="hidden" name="hard-delete" value="hard-delete">
+              <button type="submit" class="btn btn-danger me-3" onclick="return confirm(`Confirm to hard delete {{this.name}} ?`)">Hard Delete</button>
+            </form>
+          {{else}}
+            <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+              <input type="hidden" name="softDelete" value="softDelete">
+              <button type="submit" class="btn btn-outline-danger me-3" onclick="return confirm(`Confirm to soft delete {{this.name}} ?`)">Soft Delete</button>
+            </form>
+            <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+              <button type="submit" class="btn btn-danger me-3" onclick="return confirm(`Confirm to hard delete {{this.name}} ? This process will not allow to be restored !!!`)">Hard Delete</button>
+            </form>
+          {{/if}}
         </td>
       </tr>
     {{/each}}
