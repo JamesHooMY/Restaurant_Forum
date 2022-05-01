@@ -23,7 +23,8 @@
       <tr>
         <th scope='row'>{{this.id}}</th>
         <td>{{this.name}}</td>
-        <td {{#unless this.Category.name}}style="color: red"{{/unless}}>{{#if this.Category.name}}{{this.Category.name}}{{else}}Not currently classified{{/if}}</td>
+        {{!-- <td {{#unless this.Category.name}}style="color: red"{{/unless}}>{{#if this.Category.name}}{{this.Category.name}}{{else}}Not currently classified{{/if}}</td> --}}
+        <td {{#unless this.Category.name}}style="color: red"{{/unless}}>{{this.Category.name}}{{#unless this.Category.name}}Not currently classified{{/unless}}</td>
         <td>{{this.tel}}</td>
         <td>
           <a
