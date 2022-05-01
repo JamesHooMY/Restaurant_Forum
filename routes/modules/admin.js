@@ -5,12 +5,12 @@ const upload = require('../../middleware/multer')
 const adminController = require('../../controllers/admin-controllers')
 const categoryController = require('../../controllers/category-controllers')
 
-router.get('/categories/:id', categoryController.getCategories)
-router.put('/categories/:id', categoryController.putCategory)
-router.delete('/categories/:id', categoryController.deleteCategory)
-router.post('/categories/:id', categoryController.restoreCategory)
+router.get('/category/:id', categoryController.getCategories)
+router.post('/category', categoryController.postCategory)
+router.put('/category/:id', categoryController.putCategory)
+router.delete('/category/:id', categoryController.deleteCategory)
+router.post('/category/:id', categoryController.restoreCategory)
 router.get('/categories', categoryController.getCategories)
-router.post('/categories', categoryController.postCategory)
 router.get('/restaurant/create', adminController.createRestaurant)
 router.post(
   '/restaurant',

@@ -1,8 +1,8 @@
 {{>admin-tabs route='categories'}}
 {{> messages}}
 {{#if category}}
-<div class="d-flex justify-content-center align-items-center text-white-50 bg-purple">
-  <form class="row" action="/admin/categories/{{category.id}}?_method=PUT" method="POST">
+<div class="d-flex text-white-50 bg-purple">
+  <form class="row" action="/admin/category/{{category.id}}?_method=PUT" method="POST">
     <div class="col-auto">
       <input class="form-control" type="text" placeholder="Category Name" name="name" value="{{category.name}}">
     </div>
@@ -13,8 +13,8 @@
   </form>
 </div>
 {{else}}
-<div class="d-flex justify-content-center align-items-center text-white-50 bg-purple">
-  <form class="row" action="/admin/categories" method="POST">
+<div class="d-flex text-white-50 bg-purple">
+  <form class="row" action="/admin/category" method="POST">
     <div class="col-auto">
       <input class="form-control" type="text" placeholder="Category Name" name="name">
     </div>
@@ -40,24 +40,24 @@
         <td>{{this.name}}</td>
         <td>
           <button type="button" class="btn btn-link">
-            <a class="btn btn-outline-success me-3" href="/admin/categories/{{this.id}}">
+            <a class="btn btn-outline-success me-3" href="/admin/category/{{this.id}}">
               Edit
             </a>
           </button>
           {{#if this.deletedAt}}
-            <form action="/admin/categories/{{this.id}}" method="POST" style="display: inline;">
+            <form action="/admin/category/{{this.id}}" method="POST" style="display: inline;">
               <button type="submit" class="btn btn-outline-warning me-3" onclick="return confirm(`Confirm to restore {{this.name}} ?`)">Restore</button>
             </form>
-            <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+            <form action="/admin/category/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
               <input type="hidden" name="hard-delete" value="hard-delete">
               <button type="submit" class="btn btn-danger me-3" onclick="return confirm(`Confirm to hard delete {{this.name}} ?`)">Hard Delete</button>
             </form>
           {{else}}
-            <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+            <form action="/admin/category/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
               <input type="hidden" name="softDelete" value="softDelete">
               <button type="submit" class="btn btn-outline-danger me-3" onclick="return confirm(`Confirm to soft delete {{this.name}} ?`)">Soft Delete</button>
             </form>
-            <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+            <form action="/admin/category/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
               <button type="submit" class="btn btn-danger me-3" onclick="return confirm(`Confirm to hard delete {{this.name}} ? This process will not allow to be restored !!!`)">Hard Delete</button>
             </form>
           {{/if}}

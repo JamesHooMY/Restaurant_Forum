@@ -46,7 +46,7 @@ const categoryController = {
   deleteCategory: (req, res, next) => {
     const categoryId = req.params.id
     const { softDelete } = req.body
-    return Category.findByPk(categoryId)
+    return Category.findByPk(categoryId, { paranoid: false })
       .then((category) => {
         if (!category) throw new Error("Category didn't exist!")
         return softDelete
