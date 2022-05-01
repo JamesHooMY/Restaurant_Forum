@@ -1,0 +1,56 @@
+{{> admin-tabs route='users'}}
+{{> messages}}
+<div class="row">
+    <div class="col">
+      <a class="btn btn-success" href='/admin/user/create'>
+        New User
+      </a>
+    </div>
+</div>
+</br>
+<table class='table align-middle'>
+  <thead class='thead-dark'>
+    <tr>
+      <th scope='col'>Id</th>
+      <th scope='col'>Name</th>
+      <th scope='col'>Identity</th>
+      <th scope='col'>Control</th>
+      <th scope='col'>Functions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+      <tr>
+        <th scope='row'>{{this.id}}</th>
+        <td>{{this.name}}</td>
+        <td>{{#if this.isAdmin}}Admin{{else}}User{{/if}}</td>
+        <td>
+          <form action="/admin/user/{{this.id}}?_method=PATCH" method="POST">
+            <button class="btn {{#if this.isAdmin}}btn-primary{{else}}btn-warning{{/if}}">{{#if this.isAdmin}}set as User{{else}}set as Admin{{/if}}</button>
+          </form>
+        </td>
+        <td>
+          <a
+            class='btn btn-outline-secondary me-3'
+            href='/admin/user/{{this.id}}'
+          >
+            Details
+          </a>
+          <a
+            class='btn btn-outline-success me-3'
+            href='/admin/user/{{this.id}}/edit'
+          >
+            Edit
+          </a>
+          <form
+            action='/admin/user/{{this.id}}?_method=DELETE'
+            method='POST'
+            style='display: inline;'
+          >
+            <button type='submit' class='btn btn-outline-danger' onclick="return confirm(`Confirm to delete {{this.name}} ?`)">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>

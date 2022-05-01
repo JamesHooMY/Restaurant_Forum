@@ -38,5 +38,30 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
+  getUsers: (req, res, next) => {
+    return User.findAll({ raw: true })
+      .then((users) => res.render('admin/users', { users }))
+      .catch((err) => next(err))
+  },
+  patchUser: (req, res, next) => {
+    const userId = req.params.id
+    return User.findByPk(userId)
+      .then((user) => {
+        if (!user) throw new Error('User did not exists!')
+        if (user.email === 'root@example.com')
+          throw new Error(
+            'The identity of root@example.com can not be changed!'
+          )
+        return user.update({ isAdmin: !user.isAdmin })
+      })
+      .then(() => {
+        req.flash(
+          'success_messages',
+          'Identity of user was changed successfully!'
+        )
+        res.redirect('/admin/users')
+      })
+      .catch((err) => next(err))
+  },
 }
 module.exports = userController
