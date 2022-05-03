@@ -20,6 +20,19 @@ const commentController = {
       })
       .catch((err) => next(err))
   },
+  deleteComment: (req, res, next) => {
+    const commentId = req.params.id
+    return Comment.findByPk(commentId)
+      .then((comment) => {
+        if (!comment) throw new Error('Comment did not exits!')
+        return comment.destroy()
+      })
+      .then((deleteComment) => {
+        req.flash('success_messages', 'Comment was deleted sucessfully!')
+        res.redirect(`/restaurant/${restaurantId}`)
+      })
+      .catch((err) => next(err))
+  },
 }
 
 module.exports = commentController
