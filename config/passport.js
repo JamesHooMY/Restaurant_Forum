@@ -11,24 +11,27 @@ passport.use(
       passwordField: 'password',
       passReqToCallback: true,
     },
-    (req, email, password, cb) => {
-      User.findOne({ where: { email } }).then((user) => {
+    async (req, email, password, cb) => {
+      try {
+        const user = await User.findOne({ where: { email } })
         if (!user)
           return cb(
             null,
             false,
             req.flash('error_messages', 'Account or password is incorrect!')
           )
-        bcrypt.compare(password, user.password).then((res) => {
-          if (!res)
-            return cb(
-              null,
-              false,
-              req.flash('error_messages', 'Account or password is incorrect!')
-            )
-          return cb(null, user)
-        })
-      })
+
+        const res = await bcrypt.compare(password, user.password)
+        if (!res)
+          return cb(
+            null,
+            false,
+            req.flash('error_messages', 'Account or password is incorrect!')
+          )
+        return cb(null, user)
+      } catch (err) {
+        return cb(null, false, req.flash('error_messages', `${err}`))
+      }
     }
   )
 )
@@ -37,9 +40,11 @@ passport.serializeUser((user, cb) => {
   cb(null, user.id)
 })
 passport.deserializeUser((id, cb) => {
-  User.findByPk(id).then((user) => {
-    user = user.toJSON()
-    return cb(null, user)
-  })
+  User.findByPk(id)
+    .then((user) => {
+      user = user.toJSON()
+      return cb(null, user)
+    })
+    .catch((err) => cb(err))
 })
 module.exports = passport

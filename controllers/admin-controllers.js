@@ -6,109 +6,129 @@ const {
 const imgur = require('imgur')
 
 const adminController = {
-  getRestaurants: (req, res, next) => {
-    return Restaurant.findAll({ raw: true, nest: true, include: [Category] })
-      .then((restaurants) => res.render('admin/restaurants', { restaurants }))
-      .catch((err) => next(err))
+  getRestaurants: async (req, res, next) => {
+    try {
+      const restaurants = await Restaurant.findAll({
+        raw: true,
+        nest: true,
+        include: [Category],
+      })
+
+      return res.render('admin/restaurants', { restaurants })
+    } catch (err) {
+      next(err)
+    }
   },
-  createRestaurant: (req, res) => {
-    return Category.findAll({ raw: true })
-      .then((categories) =>
-        res.render('admin/create-restaurant', { categories })
-      )
-      .catch((err) => next(err))
+  createRestaurant: async (req, res) => {
+    try {
+      const categories = await Category.findAll({ raw: true })
+
+      return res.render('admin/create-restaurant', { categories })
+    } catch (err) {
+      next(err)
+    }
   },
-  postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description, categoryId } =
-      req.body
-    if (!name) throw new Error('Restaurant name is required!')
-    const { file } = req // multer process image in to "req.file"
-    return imgurFileHandler(file)
-      .then((file) => {
-        const filePath = file?.link || null
-        const deleteHash = file?.deletehash || null
-        return Restaurant.create({
-          name,
-          tel,
-          address,
-          openingHours,
-          description,
-          image: filePath || null,
-          deleteHash: deleteHash || null,
-          categoryId,
-        })
+  postRestaurant: async (req, res, next) => {
+    try {
+      const { name, tel, address, openingHours, description, categoryId } =
+        req.body
+      if (!name) throw new Error('Restaurant name is required!')
+
+      const file = await imgurFileHandler(req.file) // multer process image in to "req.file"
+      await Restaurant.create({
+        name,
+        tel,
+        address,
+        openingHours,
+        description,
+        image: file?.link || null,
+        deleteHash: file?.deletehash || null,
+        categoryId,
       })
-      .then(() => {
-        req.flash('success_messages', 'restaurant was successfully created!')
-        res.redirect('/admin/restaurants')
-      })
-      .catch((err) => next(err))
+
+      req.flash('success_messages', 'restaurant was successfully created!')
+      return res.redirect('/admin/restaurants')
+    } catch (err) {
+      next(err)
+    }
   },
-  getRestaurant: (req, res, next) => {
-    const restaurantId = req.params.id
-    return Restaurant.findByPk(restaurantId, { raw: true })
-      .then((restaurant) => {
-        if (!restaurant) throw new Error('Restaurant is not exist!')
-        res.render('admin/restaurant', { restaurant })
-      })
-      .catch((err) => next(err))
+  getRestaurant: async (req, res, next) => {
+    try {
+      const restaurantId = req.params.id
+      const restaurant = await Restaurant.findByPk(restaurantId, { raw: true })
+      if (!restaurant) throw new Error('Restaurant is not exist!')
+
+      return res.render('admin/restaurant', { restaurant })
+    } catch (err) {
+      next(err)
+    }
   },
-  editRestaurant: (req, res, next) => {
-    const restaurantId = req.params.id
-    Promise.all([
-      Restaurant.findByPk(restaurantId, { raw: true }),
-      Category.findAll({ raw: true }),
-    ])
-      .then(([restaurant, categories]) => {
-        if (!restaurant) throw new Error('Restaurant is not exist!')
-        res.render('admin/edit-restaurant', { restaurant, categories })
-      })
-      .catch((err) => next(err))
+  editRestaurant: async (req, res, next) => {
+    try {
+      const restaurantId = req.params.id
+
+      const [restaurant, categories] = await Promise.all([
+        Restaurant.findByPk(restaurantId, { raw: true }),
+        Category.findAll({ raw: true }),
+      ])
+      if (!restaurant) throw new Error('Restaurant is not exist!')
+
+      return res.render('admin/edit-restaurant', { restaurant, categories })
+    } catch (err) {
+      next(err)
+    }
   },
-  putRestaurant: (req, res, next) => {
-    const restaurantId = req.params.id
-    const { name, tel, address, openingHours, description, categoryId } =
-      req.body
-    if (!name) throw new Error('Restaurant name is required!')
-    const { file } = req
-    return Promise.all([
-      Restaurant.findByPk(restaurantId),
-      imgurFileHandler(file),
-    ])
-      .then(async ([restaurant, file]) => {
-        if (!restaurant) throw new Error('Restaurant is not exist!')
-        const filePath = file?.link || null
-        const deleteHash = file?.deletehash || null
-        if (deleteHash) await imgur.deleteImage(restaurant.deleteHash)
-        return restaurant.update({
-          name,
-          tel,
-          address,
-          openingHours,
-          description,
-          image: filePath || null,
-          deleteHash: deleteHash || restaurant.deleteHash,
-          categoryId,
-        })
+  putRestaurant: async (req, res, next) => {
+    try {
+      const restaurantId = req.params.id
+
+      const { name, tel, address, openingHours, description, categoryId } =
+        req.body
+      if (!name) throw new Error('Restaurant name is required!')
+
+      const [restaurant, file] = await Promise.all([
+        Restaurant.findByPk(restaurantId),
+        imgurFileHandler(req.file),
+      ])
+      if (!restaurant) throw new Error('Restaurant is not exist!')
+
+      if (file?.deletehash && restaurant.deleteHash)
+        await imgur.deleteImage(restaurant.deleteHash)
+      // file?.deletehash && restaurant.deleteHash
+      //   ? await imgur.deleteImage(restaurant.deleteHash)
+      //   : null
+
+      await restaurant.update({
+        name,
+        tel,
+        address,
+        openingHours,
+        description,
+        image: file?.link || restaurant.image,
+        deleteHash: file?.deletehash || restaurant.deleteHash,
+        categoryId,
       })
-      .then(() => {
-        req.flash('success_messages', 'restaurant was successfully edited!')
-        res.redirect('/admin/restaurants')
-      })
-      .catch((err) => next(err))
+
+      req.flash('success_messages', 'restaurant was successfully edited!')
+      return res.redirect('/admin/restaurants')
+    } catch (err) {
+      next(err)
+    }
   },
-  deleteRestaurant: (req, res, next) => {
-    const restaurantId = req.params.id
-    return Restaurant.findByPk(restaurantId)
-      .then((restaurant) => {
-        if (!restaurant) throw new Error('Restaurant is not exist!')
-        return restaurant.destroy()
-      })
-      .then(() => {
-        req.flash('success_messages', 'restaurant was successfully deleted!')
-        res.redirect('/admin/restaurants')
-      })
-      .catch((err) => next(err))
+  deleteRestaurant: async (req, res, next) => {
+    try {
+      const restaurantId = req.params.id
+
+      const restaurant = await Restaurant.findByPk(restaurantId)
+      if (!restaurant) throw new Error('Restaurant is not exist!')
+
+      await restaurant.destroy()
+
+      req.flash('success_messages', 'restaurant was successfully deleted!')
+      return res.redirect('/admin/restaurants')
+    } catch (err) {
+      next(err)
+    }
   },
 }
 

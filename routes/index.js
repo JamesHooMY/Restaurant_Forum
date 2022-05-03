@@ -3,7 +3,7 @@ const router = express.Router()
 
 const userController = require('../controllers/user-controllers')
 const restController = require('../controllers/restaurant-controllers')
-const commentController = require('../controllers/​​comment-controllers')
+const commentController = require('../controllers/comment-controllers')
 const passport = require('../config/passport')
 const admin = require('./modules/admin')
 const { generalErrorHandler } = require('../middleware/error-handler')

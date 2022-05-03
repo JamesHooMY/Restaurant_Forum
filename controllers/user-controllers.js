@@ -6,26 +6,27 @@ const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
   },
-  signUp: (req, res, next) => {
-    if (req.body.password !== req.body.passwordCheck)
-      throw new Error('Passwords do not match!')
-    User.findOne({ where: { email: req.body.email } })
-      .then((user) => {
-        if (user) throw new Error('Email already exists!')
-        return bcrypt.hash(req.body.password, 10)
+  signUp: async (req, res, next) => {
+    try {
+      const { name, email, password, passwordCheck } = req.body
+      if (password !== passwordCheck) throw new Error('Passwords do not match!')
+
+      const user = await User.findOne({ where: { email: req.body.email } })
+      if (user) throw new Error('Email already exists!')
+
+      const hash = await bcrypt.hash(req.body.password, 10)
+
+      await User.create({
+        name: req.body.name,
+        email: req.body.email,
+        password: hash,
       })
-      .then((hash) =>
-        User.create({
-          name: req.body.name,
-          email: req.body.email,
-          password: hash,
-        })
-      )
-      .then(() => {
-        req.flash('success_messages', 'Sign up successfully!')
-        res.redirect('/signin')
-      })
-      .catch((err) => next(err))
+
+      req.flash('success_messages', 'Sign up successfully!')
+      return res.redirect('/signin')
+    } catch (err) {
+      next(err)
+    }
   },
   signInPage: (req, res) => {
     res.render('signin')
@@ -39,61 +40,78 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
-  getUsers: (req, res, next) => {
-    return User.findAll({ raw: true })
-      .then((users) => res.render('admin/users', { users }))
-      .catch((err) => next(err))
-  },
-  patchUser: (req, res, next) => {
-    const userId = req.params.id
-    return User.findByPk(userId)
-      .then((user) => {
-        if (!user) throw new Error('User did not exists!')
-        if (user.email === 'root@example.com')
-          throw new Error(
-            'The identity of root@example.com can not be changed!'
-          )
-        return user.update({ isAdmin: !user.isAdmin })
-      })
-      .then(() => {
-        req.flash(
-          'success_messages',
-          'Identity of user was changed successfully!'
-        )
-        res.redirect('/admin/users')
-      })
-      .catch((err) => next(err))
-  },
-  getUser: (req, res, next) => {
-    const userId = req.params.id
+  getUsers: async (req, res, next) => {
+    try {
+      const users = await User.findAll({ raw: true })
+      if (!users) throw new Error('Users do not exists!')
 
-    return User.findByPk(userId)
-      .then((user) => {
-        if (!user) throw new Error('User did not exists!')
-        res.render('user/profile', { user: user.toJSON() })
-      })
-      .catch((err) => next(err))
+      return res.render('admin/users', { users })
+    } catch (err) {
+      next(err)
+    }
   },
-  editUser: (req, res, next) => {
-    const userId = req.params.id
-    return User.findByPk(userId, { raw: true })
-      .then((user) => res.render('user/edit', { user }))
-      .catch((err) => next(err))
+  patchUser: async (req, res, next) => {
+    try {
+      const userId = req.params.id
+
+      const user = await User.findByPk(userId)
+      if (!user) throw new Error('User did not exists!')
+      if (user.email === 'root@example.com')
+        throw new Error('The identity of root@example.com can not be changed!')
+
+      await user.update({ isAdmin: !user.isAdmin })
+
+      req.flash(
+        'success_messages',
+        'Identity of user was changed successfully!'
+      )
+      return res.redirect('/admin/users')
+    } catch (err) {
+      next(err)
+    }
   },
-  putUser: (req, res, next) => {
-    const userId = req.params.id
-    const { name } = req.body
-    const { file } = req
-    return Promise.all([User.findByPk(userId), imgurFileHandler(file)])
-      .then(([user, file]) => {
-        if (!user) throw new Error('User did not exists!')
-        return user.update({ name, image: file?.link || user.image })
-      })
-      .then(() => {
-        req.flash('success_messages', 'User profile was updated successfully!')
-        res.redirect(`/user/${userId}`)
-      })
-      .catch((err) => next(err))
+  getUser: async (req, res, next) => {
+    try {
+      const userId = req.params.id
+
+      const user = await User.findByPk(userId)
+      if (!user) throw new Error('User did not exists!')
+
+      return res.render('user/profile', { user: user.toJSON() })
+    } catch (err) {
+      next(err)
+    }
+  },
+  editUser: async (req, res, next) => {
+    try {
+      const userId = req.params.id
+
+      const user = await User.findByPk(userId, { raw: true })
+      if (!user) throw new Error('User did not exists!')
+
+      return res.render('user/edit', { user })
+    } catch (err) {
+      next(err)
+    }
+  },
+  putUser: async (req, res, next) => {
+    try {
+      const userId = req.params.id
+      const { name } = req.body
+
+      const [user, file] = await Promise.all([
+        User.findByPk(userId),
+        imgurFileHandler(req.file),
+      ])
+      if (!user) throw new Error('User did not exists!')
+
+      await user.update({ name, image: file?.link || user.image })
+
+      req.flash('success_messages', 'User profile was updated successfully!')
+      return res.redirect(`/user/${userId}`)
+    } catch (err) {
+      next(err)
+    }
   },
 }
 
