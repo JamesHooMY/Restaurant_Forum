@@ -105,7 +105,13 @@ const userController = {
       ])
       if (!user) throw new Error('User did not exists!')
 
-      await user.update({ name, image: file?.link || user.image })
+      if (file?.deletehash && user.deleteHash)
+        await imgur.deleteImage(user.deleteHash)
+      await user.update({
+        name,
+        image: file?.link || user.image,
+        delehash: file?.deletehash || user.deleteHash,
+      })
 
       req.flash('success_messages', 'User profile was updated successfully!')
       return res.redirect(`/user/${userId}`)

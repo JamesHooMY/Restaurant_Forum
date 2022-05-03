@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       password: DataTypes.STRING,
       isAdmin: DataTypes.BOOLEAN,
       image: DataTypes.STRING,
+      deleteHash: DataTypes.STRING,
     },
     {
       sequelize,
