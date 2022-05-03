@@ -21,13 +21,13 @@
     </div>
     <div class='d-flex flex-nowrap gap-3 mb-3'>
       <button type="button" class="btn position-relative" disabled>
-        <i class="fa-solid fa-comment-dots fa-lg me-1" type="button" style="color:black"></i>
+        <i class="fa-solid fa-eye fa-lg me-1" type="button" style="color:black"></i>
         <span class="position-absolute top-50 start-100 translate-middle badge rounded-pill text-dark">
           {{#if restaurant.viewCounts}}{{restaurant.viewCounts}}{{else}}0{{/if}}
         </span>
       </button>
       <button type="button" class="btn position-relative" disabled>
-        <i class="fa-solid fa-eye fa-lg me-1" type="button" style="color:black"></i>
+        <i class="fa-solid fa-comment-dots fa-lg me-1" type="button" style="color:black"></i>
         <span class="position-absolute top-50 start-100 translate-middle badge rounded-pill text-dark">
           99+
         </span>
@@ -56,6 +56,15 @@
   <hr />
 </div>
 {{!-- Comment --}}
+<h3 class="mb-3">所有評論：</h3>
+{{#each restaurant.Comments}}
+  <blockquote class="blockquote mb-0">
+    <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
+    <p>{{this.text}}</p>
+    <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
+  </blockquote>
+  <hr />
+{{/each}}
 <form action="/comments" method="POST">
   <div class="form-row mb-3">
     <label class="form-label" for="text">Comment：</label>
