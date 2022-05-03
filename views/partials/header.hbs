@@ -21,8 +21,11 @@
           <ul class='navbar-nav ms-auto mb-2 mb-md-0'>
             <li
               class='nav-item d-inline-flex align-items-center fw-bold text-light ms-3'
-            >
-              <span class='text-white nav-link'>Hi, {{user.name}}</span>
+            >Hi,
+              <a
+                class='text-white nav-link fw-bold btn'
+                href='/user/{{user.id}}'
+              >{{user.name}}</a>
             </li>
             {{#if user.isAdmin}}
               <li class='nav-item ms-3'>

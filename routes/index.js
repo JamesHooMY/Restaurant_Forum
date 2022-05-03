@@ -29,6 +29,7 @@ router.delete(
 )
 router.get('/restaurant/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
+router.get('/user/:id', authenticated, userController.getUser)
 router.use('/admin', authenticatedAdmin, admin)
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)

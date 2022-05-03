@@ -63,5 +63,11 @@ const userController = {
       })
       .catch((err) => next(err))
   },
+  getUser: (req, res, next) => {
+    const userId = req.params.id
+    return User.findByPk(userId, { raw: true })
+      .then((user) => res.render('user/profile', { user }))
+      .catch((err) => next(err))
+  },
 }
 module.exports = userController
