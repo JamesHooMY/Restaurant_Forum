@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
-const { User } = require('../models')
+const { User, Comment, Restaurant, sequelize } = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -65,9 +66,35 @@ const userController = {
   },
   getUser: (req, res, next) => {
     const userId = req.params.id
+
+    return User.findByPk(userId)
+      .then((user) => {
+        if (!user) throw new Error('User did not exists!')
+        res.render('user/profile', { user: user.toJSON() })
+      })
+      .catch((err) => next(err))
+  },
+  editUser: (req, res, next) => {
+    const userId = req.params.id
     return User.findByPk(userId, { raw: true })
-      .then((user) => res.render('user/profile', { user }))
+      .then((user) => res.render('user/edit', { user }))
+      .catch((err) => next(err))
+  },
+  putUser: (req, res, next) => {
+    const userId = req.params.id
+    const { name } = req.body
+    const { file } = req
+    return Promise.all([User.findByPk(userId), imgurFileHandler(file)])
+      .then(([user, file]) => {
+        if (!user) throw new Error('User did not exists!')
+        return user.update({ name, image: file?.link || user.image })
+      })
+      .then(() => {
+        req.flash('success_messages', 'User profile was updated successfully!')
+        res.redirect(`/user/${userId}`)
+      })
       .catch((err) => next(err))
   },
 }
+
 module.exports = userController
