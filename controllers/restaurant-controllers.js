@@ -49,6 +49,8 @@ const restController = {
       })
       if (!restaurant) throw new Error('Restaurant is not exist!')
 
+      await restaurant.increment({ viewCounts: 1 })
+
       return res.render('restaurant', { restaurant: restaurant.toJSON() })
     } catch (err) {
       next(err)

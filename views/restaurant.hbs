@@ -57,7 +57,7 @@
   <hr />
 </div>
 {{!-- Comment --}}
-{{#if restaurant.Comments}}<h3 class="mb-5">All Comments：</h3>{{else}}<h3 class="mb-5">No any comment.</h3>{{/if}}
+{{#if restaurant.Comments}}<h3 class="mb-5">All Comments: </h3>{{else}}<h3 class="mb-5">No any comment.</h3>{{/if}}
 {{#each restaurant.Comments}}
   {{#if ../user.isAdmin}}
     <form action="/comment/{{this.id}}?_method=DELETE" method="POST" class="float-end">

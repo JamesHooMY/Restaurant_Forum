@@ -7,31 +7,84 @@
       onload='this.style.opacity=1;'
     />
   </div>
+
   <div class='col-md-8'>
-    <h2>{{user.name}}</h2>
+    <div class='row'>
+      <h2 class='col-2' style='display: inline;'>{{user.name}}</h2>
+      <a
+        class='btn btn-outline-success col-2'
+        href='/user/{{user.id}}/edit'
+        style='display: inline;'
+      >Edit</a>
+    </div>
     <h3>{{user.email}}</h3>
-    <a
-      class='btn btn-outline-success mt-3'
-      href='/user/{{user.id}}/edit'
-    >Edit</a>
+    <div class='d-flex flex-nowrap gap-3 mb-3'>
+      <button type='button' class='btn position-relative' disabled>
+        <i
+          class='fa-solid fa-comment-dots fa-lg me-1'
+          type='button'
+          style='color:black'
+        ></i>
+        <span
+          class='position-absolute top-50 start-100 translate-middle badge rounded-pill text-dark'
+        >
+          {{user.totalComments}}
+        </span>
+      </button>
+      <form action='/user/{{user.id}}' method='POST'>
+        <button type='submit' class='btn position-relative'>
+          <i
+            class='fa-solid fa-heart fa-lg me-1'
+            type='button'
+            style='color:red'
+          ></i>
+          <span
+            class='position-absolute top-50 start-100 translate-middle badge rounded-pill text-dark'
+          >
+            99+
+          </span>
+        </button>
+      </form>
+      <form action='/user/{{user.id}}' method='POST'>
+        <button type='submit' class='btn position-relative'>
+          <i
+            class='fa-solid fa-thumbs-up fa-lg me-1'
+            type='button'
+            style='color:blue'
+          ></i>
+          <span
+            class='position-absolute top-50 start-100 translate-middle badge rounded-pill text-dark'
+          >
+            99+
+          </span>
+        </button>
+      </form>
+    </div>
+
   </div>
 </div>
 
 <div class='row'>
   <div class='col-12'>
     <div class='card mb-3'>
-      <div class='card-header'>0 Commented restaurants</div>
+      <div class='card-header'>{{user.restaurantComments.length}}
+        Commented restaurants</div>
       <div class='card-body'>
-        <a href='/restaurant/{{this.id}}' class='text-decoration-none'>
-          <img
-            src={{this.image}}
-            width='60'
-            height='60'
-            class='avatar'
-            style='transition: opacity 0.5s; opacity:0;'
-            onload='this.style.opacity=1;'
-          />
-        </a>
+        {{#each user.restaurantComments}}
+          <a
+            href='/restaurant/{{this.Restaurant.id}}'
+            class='text-decoration-none'
+          >
+            <img
+              src={{this.Restaurant.image}}
+              width='60'
+              height='60'
+              class='avatar'
+              style='transition: opacity 0.5s; opacity:0;'
+              onload='this.style.opacity=1;'
+            />
+          </a>
+        {{/each}}
       </div>
     </div>
   </div>
