@@ -43,8 +43,9 @@ const restController = {
     })
       .then((restaurant) => {
         if (!restaurant) throw new Error('Restaurant is not exist!')
-        restaurant.viewCounts += 1
-        return restaurant.update({ viewCounts: restaurant.viewCounts })
+        // restaurant.viewCounts += 1
+        // return restaurant.update({ viewCounts: restaurant.viewCounts })
+        return restaurant.increment({ viewCounts: 1 })
       })
       .then((restaurant) => {
         res.render('restaurant', { restaurant: restaurant.toJSON() })
