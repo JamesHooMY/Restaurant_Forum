@@ -49,6 +49,7 @@ const restController = {
         FavoritedUsers: restaurant.FavoritedUsers.length,
         Comments: restaurant.Comments.length,
       }))
+
       console.log(data)
       return res.render('restaurants', {
         restaurants: data,
@@ -82,7 +83,7 @@ const restController = {
       restaurant = restaurant.toJSON()
       console.log(restaurant)
 
-      // restaurant.viewCounts += 1 // update data viewCounts for render
+      restaurant.viewCounts += 1 // update data viewCounts for render
       restaurant.isFavorited = req.user.FavoritedRestaurants?.map(
         (favoritedRestaurant) => favoritedRestaurant.id
       ).includes(restaurant.id)
@@ -109,7 +110,7 @@ const restController = {
         nest: true,
       }),
     ])
-
+    console.log(comments)
     return res.render('news', { restaurants, comments })
   },
 }
