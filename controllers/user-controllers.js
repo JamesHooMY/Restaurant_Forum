@@ -1,5 +1,12 @@
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant, Favorite, sequelize } = require('../models')
+const {
+  User,
+  Comment,
+  Restaurant,
+  Favorite,
+  Like,
+  sequelize,
+} = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -166,10 +173,47 @@ const userController = {
       const favorite = await Favorite.findOne({
         where: { userId, restaurantId },
       })
+      if (!user) throw new Error('User did not exists!')
       if (!favorite)
         throw new Error('You did not add the restaurant as favorite!')
 
       await favorite.destroy()
+
+      res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  addLike: async (req, res, next) => {
+    try {
+      const userId = req.user.id
+      const { restaurantId } = req.params
+      const [user, like] = await Promise.all([
+        User.findByPk(userId),
+        Like.findOne({ where: { userId, restaurantId } }),
+      ])
+      if (!user) throw new Error('User did not exists!')
+      if (like) throw new Error('Restaurant already like!')
+
+      await Like.create({ userId, restaurantId })
+
+      res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  deleteLike: async (req, res, next) => {
+    try {
+      const userId = req.user.id
+      const { restaurantId } = req.params
+      const [user, like] = await Promise.all([
+        User.findByPk(userId),
+        Like.findOne({ where: { userId, restaurantId } }),
+      ])
+      if (!user) throw new Error('User did not exists!')
+      if (!like) throw new Error('You did not like the restaurant!')
+
+      await like.destroy()
 
       res.redirect('back')
     } catch (err) {

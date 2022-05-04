@@ -49,6 +49,10 @@ router.delete(
   userController.deleteFavorite
 )
 
+//user like restaurants
+router.post('/like/:restaurantId', authenticated, userController.addLike)
+router.delete('/like/:restaurantId', authenticated, userController.deleteLike)
+
 // user profile
 router.get('/user/:id/edit', authenticated, userController.editUser)
 router.put(
