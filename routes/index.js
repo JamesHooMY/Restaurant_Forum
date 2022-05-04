@@ -29,6 +29,7 @@ router.delete(
   commentController.deleteComment
 )
 router.get('/restaurant/:id', authenticated, restController.getRestaurant)
+router.get('/restaurants/news', authenticated, restController.getNews)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 router.get('/user/:id/edit', authenticated, userController.editUser)
 router.put(

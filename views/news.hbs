@@ -1,0 +1,45 @@
+{{> restaurant-tabs route='news'}}
+<h1>News</h1>
+<hr />
+<div class="row mt-5">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        New Restaurants
+      </div>
+      <div class="card-body">
+        {{#each restaurants}}
+          <div>
+            <h4>
+              <a class="link-primary me-3" href="/restaurant/{{this.id}}" style="text-decoration: none;">{{this.name}}</a>
+              <span class="badge bg-dark col my-auto"{{#unless this.Category.name}}style="color: red"{{/unless}}>{{this.Category.name}}{{#unless this.Category.name}}Not currently classified{{/unless}}</span>
+            </h4>
+            <p class="my-4" style="white-space: break-spaces;">{{this.description}}</p>
+            {{relativeTimeFromNow this.createdAt}}
+            <hr>
+          </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        New Comments
+      </div>
+      <div class="card-body">
+        {{#each comments}}
+          <div>
+            <h4>
+              <a class="link-primary" href="/restaurant/{{this.Restaurant.id}}" style="text-decoration: none;">{{this.Restaurant.name}}</a>
+            </h4>
+            <p class="my-4" style="white-space: break-spaces;">{{this.text}}</p>
+            - <a class="link-info" href="/user/{{this.User.id}}" style="text-decoration: none;">{{this.User.name}}</a>
+            <small>at {{relativeTimeFromNow this.createdAt}}</small>
+            <hr>
+          </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+</div> 
