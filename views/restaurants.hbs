@@ -21,10 +21,40 @@
         </a>
         <div class="card-body">
           <div class="row">
-            <p class="card-text col my-auto">
-              <a href="/restaurant/{{this.id}}" style="text-decoration: none;">{{this.name}}</a>
-            </p>
-            <span class="badge bg-dark col my-auto"{{#unless this.Category.name}}style="color: red"{{/unless}}>{{this.Category.name}}{{#unless this.Category.name}}Not currently classified{{/unless}}</span>
+            <a href="/restaurant/{{this.id}}" class="card-text" style="text-decoration: none; color:red;">
+              <h3 class="text-center  fw-bold" >{{this.name}}</h2>
+            </a>
+            <div class="d-flex justify-content-evenly">
+              <form action='/favorite/{{this.id}}?_method=DELETE' method='POST'>
+                <button type='submit' class='btn position-relative'>
+                  <i
+                    class='fa-solid fa-heart fa-lg me-1'
+                    type='button'
+                    style='color:red'
+                  ></i>
+                  <span
+                    class='position-absolute top-50 start-100 translate-middle badge rounded-pill text-dark'
+                  >
+                    99+
+                  </span>
+                </button>
+              </form>
+              <form action='/favorite/{{this.id}}' method='POST'>
+                <button type='submit' class='btn position-relative'>
+                  <i
+                    class='fa-solid fa-heart fa-lg me-1'
+                    type='button'
+                    style='color:black'
+                  ></i>
+                  <span
+                    class='position-absolute top-50 start-100 translate-middle badge rounded-pill text-dark'
+                  >
+                    99+
+                  </span>
+                </button>
+              </form>
+            </div>
+            <span class="badge bg-dark my-auto"{{#unless this.Category.name}}style="color: red"{{/unless}}>{{this.Category.name}}{{#unless this.Category.name}}Not currently classified{{/unless}}</span>
           </div>
           <p class="card-text text-truncate">{{this.description}}</p>
         </div>

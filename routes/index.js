@@ -10,6 +10,7 @@ const { generalErrorHandler } = require('../middleware/error-handler')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const upload = require('../middleware/multer')
 
+// user login
 router.get('/logout', userController.logout)
 router.get('/signin', userController.signInPage)
 router.post(
@@ -22,15 +23,33 @@ router.post(
 )
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
+
+// user comments
 router.post('/comment', authenticated, commentController.postComment)
 router.delete(
   '/comment/:id',
   authenticatedAdmin,
   commentController.deleteComment
 )
+
+// user browse restaurants
 router.get('/restaurant/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants/news', authenticated, restController.getNews)
 router.get('/restaurants', authenticated, restController.getRestaurants)
+
+//user favorite restaurants
+router.post(
+  '/favorite/:restaurantId',
+  authenticated,
+  userController.addFavorite
+)
+router.delete(
+  '/favorite/:restaurantId',
+  authenticated,
+  userController.deleteFavorite
+)
+
+// user profile
 router.get('/user/:id/edit', authenticated, userController.editUser)
 router.put(
   '/user/:id',
@@ -39,6 +58,8 @@ router.put(
   userController.putUser
 )
 router.get('/user/:id', authenticated, userController.getUser)
+
+// administrator
 router.use('/admin', authenticatedAdmin, admin)
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)

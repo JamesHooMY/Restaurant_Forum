@@ -1,4 +1,11 @@
-const { Restaurant, Category, Comment, User } = require('../models')
+const {
+  Restaurant,
+  Category,
+  Comment,
+  User,
+  Favorite,
+  sequelize,
+} = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restController = {

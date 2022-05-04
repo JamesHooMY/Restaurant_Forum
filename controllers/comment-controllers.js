@@ -17,7 +17,8 @@ const commentController = {
       await Comment.create({ text, userId, restaurantId })
 
       req.flash('success_messages', 'Comment successfully submitted!')
-      return res.redirect(`/restaurant/${restaurantId}`)
+      // return res.redirect(`/restaurant/${restaurantId}`)
+      return res.redirect('back')
     } catch (err) {
       next(err)
     }
@@ -29,10 +30,12 @@ const commentController = {
       const comment = await Comment.findByPk(commentId)
       if (!comment) throw new Error('Comment did not exits!')
 
-      const deletedComment = await comment.destroy()
+      await comment.destroy()
+      // const deletedComment = await comment.destroy()
 
       req.flash('success_messages', 'Comment was deleted sucessfully!')
-      return res.redirect(`/restaurant/${deletedComment.restaurantId}`)
+      // return res.redirect(`/restaurant/${deletedComment.restaurantId}`)
+      return res.redirect('back')
     } catch (err) {
       next(err)
     }

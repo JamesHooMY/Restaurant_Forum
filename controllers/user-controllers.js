@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant, sequelize } = require('../models')
+const { User, Comment, Restaurant, Favorite, sequelize } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -137,6 +137,41 @@ const userController = {
 
       req.flash('success_messages', 'User profile was updated successfully!')
       return res.redirect(`/user/${userId}`)
+    } catch (err) {
+      next(err)
+    }
+  },
+  addFavorite: async (req, res, next) => {
+    try {
+      const userId = req.user.id
+      const { restaurantId } = req.params
+      const [user, favorite] = await Promise.all([
+        User.findByPk(userId),
+        Favorite.findOne({ where: { userId, restaurantId } }),
+      ])
+      if (!user) throw new Error('User did not exists!')
+      if (favorite) throw new Error('Restaurant already add to favorite!')
+
+      await Favorite.create({ userId, restaurantId })
+
+      res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  deleteFavorite: async (req, res, next) => {
+    try {
+      const userId = req.user.id
+      const { restaurantId } = req.params
+      const favorite = await Favorite.findOne({
+        where: { userId, restaurantId },
+      })
+      if (!favorite)
+        throw new Error('You did not add the restaurant as favorite!')
+
+      await favorite.destroy()
+
+      res.redirect('back')
     } catch (err) {
       next(err)
     }
