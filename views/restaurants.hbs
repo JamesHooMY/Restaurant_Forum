@@ -25,34 +25,36 @@
               <h3 class="text-center  fw-bold" >{{this.name}}</h2>
             </a>
             <div class="d-flex justify-content-evenly">
-              <form action='/favorite/{{this.id}}?_method=DELETE' method='POST'>
+              <button type="button" class="btn position-relative" disabled>
+                <i class="fa-solid fa-eye fa-lg me-1" type="button" style="color:black"></i>
+                <span class="position-absolute top-50 start-100 translate-middle badge rounded-pill text-dark">
+                  {{this.viewCounts}}
+                </span>
+              </button>
+              <form action='/favorite/{{this.id}}{{#if this.isFavorited}}?_method=DELETE{{/if}}' method='POST'>
                 <button type='submit' class='btn position-relative'>
                   <i
                     class='fa-solid fa-heart fa-lg me-1'
                     type='button'
+                    {{#if this.isFavorited}}
                     style='color:red'
-                  ></i>
-                  <span
-                    class='position-absolute top-50 start-100 translate-middle badge rounded-pill text-dark'
-                  >
-                    99+
-                  </span>
-                </button>
-              </form>
-              <form action='/favorite/{{this.id}}' method='POST'>
-                <button type='submit' class='btn position-relative'>
-                  <i
-                    class='fa-solid fa-heart fa-lg me-1'
-                    type='button'
+                    {{else}}
                     style='color:black'
+                    {{/if}}
                   ></i>
                   <span
                     class='position-absolute top-50 start-100 translate-middle badge rounded-pill text-dark'
                   >
-                    99+
+                    {{this.FavoritedUsers}}
                   </span>
                 </button>
               </form>
+              <button type="button" class="btn position-relative" disabled>
+                <i class="fa-solid fa-comment-dots fa-lg me-1" type="button" style="color:black"></i>
+                <span class="position-absolute top-50 start-100 translate-middle badge rounded-pill text-dark">
+                  {{this.Comments}}
+                </span>
+              </button>
             </div>
             <span class="badge bg-dark my-auto"{{#unless this.Category.name}}style="color: red"{{/unless}}>{{this.Category.name}}{{#unless this.Category.name}}Not currently classified{{/unless}}</span>
           </div>

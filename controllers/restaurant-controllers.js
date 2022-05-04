@@ -18,9 +18,17 @@ const restController = {
 
       const [restaurants, categories] = await Promise.all([
         Restaurant.findAndCountAll({
-          raw: true,
-          nest: true,
-          include: [Category],
+          // raw, nest will effect the results of include with multiple models
+          // raw: true,
+          // nest: true,
+          include: [
+            Category,
+            Comment,
+            {
+              model: User,
+              as: 'FavoritedUsers',
+            },
+          ],
           where: { ...(categoryId ? { categoryId } : {}) },
           limit,
           offset: getOffset(limit, page),
@@ -29,13 +37,19 @@ const restController = {
       ])
       if (!restaurants) throw new Error('Restaurants is not exist!')
       if (!categories) throw new Error('Categories is not exist!')
-
+      // console.log(restaurants)
       const data = restaurants.rows.map((restaurant) => ({
-        ...restaurant,
+        ...restaurant.toJSON(),
         description: restaurant.description.substring(0, 50),
         // replace the description with limited 50 substring
+        isFavorited: req.user.FavoritedRestaurants?.map(
+          (favoritedRestaurant) => favoritedRestaurant.id
+        ).includes(restaurant.id),
+        // favoritedUserCounts: restaurant.FavoritedUsers.length,
+        FavoritedUsers: restaurant.FavoritedUsers.length,
+        Comments: restaurant.Comments.length,
       }))
-
+      console.log(data)
       return res.render('restaurants', {
         restaurants: data,
         categories,
@@ -50,15 +64,30 @@ const restController = {
     try {
       const restaurantId = req.params.id
 
-      const restaurant = await Restaurant.findByPk(restaurantId, {
-        include: [Category, { model: Comment, include: User }],
+      let restaurant = await Restaurant.findByPk(restaurantId, {
+        include: [
+          Category,
+          { model: Comment, include: User },
+          {
+            model: User,
+            as: 'FavoritedUsers',
+          },
+        ],
         order: [[Comment, 'createdAt', 'DESC']],
       })
       if (!restaurant) throw new Error('Restaurant is not exist!')
 
-      await restaurant.increment({ viewCounts: 1 })
+      await restaurant.increment({ viewCounts: 1 }) // update database viewCounts
 
-      return res.render('restaurant', { restaurant: restaurant.toJSON() })
+      restaurant = restaurant.toJSON()
+      console.log(restaurant)
+
+      // restaurant.viewCounts += 1 // update data viewCounts for render
+      restaurant.isFavorited = req.user.FavoritedRestaurants?.map(
+        (favoritedRestaurant) => favoritedRestaurant.id
+      ).includes(restaurant.id)
+
+      return res.render('restaurant', { restaurant })
     } catch (err) {
       next(err)
     }
