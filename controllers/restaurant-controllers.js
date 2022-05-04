@@ -55,7 +55,8 @@ const restController = {
         restaurants: data,
         categories,
         categoryId,
-        pagination: getPagination(limit, page, restaurants.count),
+        pagination: getPagination(limit, page, data.count),
+        // if user "restaurants.count", after soft_delete category will effect the pages number of pagination
       })
     } catch (err) {
       next(err)
