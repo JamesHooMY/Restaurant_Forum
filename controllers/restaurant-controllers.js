@@ -1,11 +1,4 @@
-const {
-  Restaurant,
-  Category,
-  Comment,
-  User,
-  Favorite,
-  sequelize,
-} = require('../models')
+const { Restaurant, Category, Comment, User, Like } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restController = {
@@ -28,6 +21,10 @@ const restController = {
               model: User,
               as: 'FavoritedUsers',
             },
+            {
+              model: User,
+              as: 'LikedUsers',
+            },
           ],
           where: { ...(categoryId ? { categoryId } : {}) },
           limit,
@@ -38,15 +35,26 @@ const restController = {
       if (!restaurants) throw new Error('Restaurants is not exist!')
       if (!categories) throw new Error('Categories is not exist!')
       // console.log(restaurants)
+
+      const favoritedRestaurantIds = req.user.FavoritedRestaurants?.map(
+        (favoritedRestaurant) => favoritedRestaurant.id
+      )
+      const likedRestaurantIds = req.user.LikedRestaurants?.map(
+        (likedRestaurant) => likedRestaurant.id
+      )
+
       const data = restaurants.rows.map((restaurant) => ({
         ...restaurant.toJSON(),
         description: restaurant.description.substring(0, 50),
         // replace the description with limited 50 substring
-        isFavorited: req.user.FavoritedRestaurants?.map(
-          (favoritedRestaurant) => favoritedRestaurant.id
-        ).includes(restaurant.id),
+
+        isFavorited: favoritedRestaurantIds.includes(restaurant.id),
+        isLiked: likedRestaurantIds.includes(restaurant.id),
+
         // favoritedUserCounts: restaurant.FavoritedUsers.length,
         FavoritedUsers: restaurant.FavoritedUsers.length,
+        LikedUsers: restaurant.LikedUsers.length,
+
         Comments: restaurant.Comments.length,
       }))
 
@@ -74,6 +82,10 @@ const restController = {
             model: User,
             as: 'FavoritedUsers',
           },
+          {
+            model: User,
+            as: 'LikedUsers',
+          },
         ],
         order: [[Comment, 'createdAt', 'DESC']],
       })
@@ -82,12 +94,18 @@ const restController = {
       await restaurant.increment({ viewCounts: 1 }) // update database viewCounts
 
       restaurant = restaurant.toJSON()
-      console.log(restaurant)
-
+      // console.log(restaurant)
       restaurant.viewCounts += 1 // update data viewCounts for render
-      restaurant.isFavorited = req.user.FavoritedRestaurants?.map(
+
+      const favoritedRestaurantIds = req.user.FavoritedRestaurants?.map(
         (favoritedRestaurant) => favoritedRestaurant.id
-      ).includes(restaurant.id)
+      )
+      const likedRestaurantIds = req.user.LikedRestaurants?.map(
+        (likedRestaurant) => likedRestaurant.id
+      )
+
+      restaurant.isFavorited = favoritedRestaurantIds.includes(restaurant.id)
+      restaurant.isLiked = likedRestaurantIds.includes(restaurant.id)
 
       return res.render('restaurant', { restaurant })
     } catch (err) {

@@ -21,7 +21,7 @@
         </a>
         <div class="card-body">
           <div class="row">
-            <a href="/restaurant/{{this.id}}" class="card-text" style="text-decoration: none; color:red;">
+            <a href="/restaurant/{{this.id}}" class="card-text" style="text-decoration: none; color:black;">
               <h3 class="text-center  fw-bold" >{{this.name}}</h2>
             </a>
             <div class="d-flex justify-content-center">
@@ -55,17 +55,21 @@
                   {{this.Comments}}
                 </span>
               </button>
-              <form action='/like/{{this.id}}' method='POST'>
+              <form action='/like/{{this.id}}{{#if this.isLiked}}?_method=DELETE{{/if}}' method='POST'>
                 <button type='submit' class='btn position-relative'>
                   <i
                     class='fa-solid fa-thumbs-up fa-lg me-1'
                     type='button'
+                    {{#if this.isLiked}}
                     style='color:blue'
+                    {{else}}
+                    style='color:black'
+                    {{/if}}
                   ></i>
                   <span
                     class='position-absolute top-50 start-100 translate-middle badge rounded-pill text-dark'
                   >
-                    99+
+                    {{this.LikedUsers}}
                   </span>
                 </button>
               </form>
