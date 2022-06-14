@@ -1,5 +1,5 @@
-const { Restaurant, Category, Comment, User, Like } = require('../models')
-const { getOffset, getPagination } = require('../helpers/pagination-helper')
+const { Restaurant, Category, Comment, User, Like } = require('../../models')
+const { getOffset, getPagination } = require('../../helpers/pagination-helper')
 
 const restController = {
   getRestaurants: async (req, res, next) => {
@@ -58,7 +58,7 @@ const restController = {
         Comments: restaurant.Comments.length,
       }))
 
-      console.log(data)
+      // console.log(data)
       return res.render('restaurants', {
         restaurants: data,
         categories,
@@ -129,7 +129,7 @@ const restController = {
         nest: true,
       }),
     ])
-    console.log(comments)
+    // console.log(comments)
     return res.render('news', { restaurants, comments })
   },
 }

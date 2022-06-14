@@ -12,7 +12,7 @@ const { getUser } = require('./helpers/auth-helpers')
 
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const passport = require('./config/passport')
-const routes = require('./routes')
+const { pages, apis } = require('./routes')
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -44,7 +44,8 @@ app.use((req, res, next) => {
   res.locals.user = getUser(req)
   next()
 })
-app.use(routes)
+app.use(pages)
+app.use('/api', apis)
 
 app.listen(port, () => {
   console.info(`App listening on port ${port}!`)

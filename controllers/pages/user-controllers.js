@@ -6,8 +6,8 @@ const {
   Favorite,
   Like,
   sequelize,
-} = require('../models')
-const { imgurFileHandler } = require('../helpers/file-helpers')
+} = require('../../models')
+const { imgurFileHandler } = require('../../helpers/file-helpers')
 
 const userController = {
   signUpPage: (req, res) => {

@@ -1,10 +1,10 @@
 const express = require('express')
 const router = express.Router()
 
-const upload = require('../../middleware/multer')
-const adminController = require('../../controllers/admin-controllers')
-const categoryController = require('../../controllers/category-controllers')
-const userController = require('../../controllers/user-controllers')
+const upload = require('../../../middleware/multer')
+const adminController = require('../../../controllers/pages/admin-controllers')
+const categoryController = require('../../../controllers/pages/category-controllers')
+const userController = require('../../../controllers/pages/user-controllers')
 
 router.get('/users', userController.getUsers)
 router.patch('/user/:id', userController.patchUser)
