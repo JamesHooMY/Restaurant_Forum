@@ -123,7 +123,7 @@ const restController = {
       }),
       Comment.findAll({
         limit: 10,
-        include: [Restaurant, User],
+        include: [{ model: Restaurant, include: Category }, User],
         order: [['createdAt', 'DESC']],
         raw: true,
         nest: true,

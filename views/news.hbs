@@ -10,6 +10,11 @@
       <div class="card-body">
         {{#each restaurants}}
           <div>
+            <a class="link-primary me-3" href="/restaurant/{{this.id}}" style="text-decoration: none;">
+              <img src="{{this.image}}" alt="restaurant_image">
+            </a>
+            <br>
+            <br>
             <h4>
               <a class="link-primary me-3" href="/restaurant/{{this.id}}" style="text-decoration: none;">{{this.name}}</a>
               <span class="badge bg-dark col my-auto"{{#unless this.Category.name}}style="color: red"{{/unless}}>{{this.Category.name}}{{#unless this.Category.name}}Not currently classified{{/unless}}</span>
@@ -30,8 +35,14 @@
       <div class="card-body">
         {{#each comments}}
           <div>
+            <a class="link-primary me-3" href="/restaurant/{{this.id}}" style="text-decoration: none;">
+              <img src="{{this.Restaurant.image}}" alt="restaurant_image">
+            </a>
+            <br>
+            <br>
             <h4>
-              <a class="link-primary" href="/restaurant/{{this.Restaurant.id}}" style="text-decoration: none;">{{this.Restaurant.name}}</a>
+              <a class="link-primary me-3" href="/restaurant/{{this.Restaurant.id}}" style="text-decoration: none;">{{this.Restaurant.name}}</a>
+              <span class="badge bg-dark col my-auto"{{#unless this.Restaurant.Category.name}}style="color: red"{{/unless}}>{{this.Restaurant.Category.name}}{{#unless this.Restaurant.Category.name}}Not currently classified{{/unless}}</span>
             </h4>
             <p class="my-4" style="white-space: break-spaces;">{{this.text}}</p>
             - <a class="link-info" href="/user/{{this.User.id}}" style="text-decoration: none;">{{this.User.name}}</a>
