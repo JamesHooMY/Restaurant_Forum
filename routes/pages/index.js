@@ -4,6 +4,8 @@ const router = express.Router()
 const userController = require('../../controllers/pages/user-controllers')
 const restController = require('../../controllers/pages/restaurant-controllers')
 const commentController = require('../../controllers/pages/comment-controllers')
+const topController = require('../../controllers/pages/top-controllers')
+
 const passport = require('../../config/passport')
 const admin = require('./modules/admin')
 const { generalErrorHandler } = require('../../middleware/error-handler')
@@ -33,7 +35,6 @@ router.put(
   userController.putUser
 )
 router.get('/user/:id', authenticated, userController.getUser)
-router.get('/top/users', authenticated, userController.getTopUsers)
 
 // user comments
 router.post('/comment', authenticated, commentController.postComment)
@@ -71,6 +72,9 @@ router.delete(
   authenticated,
   userController.removeFollowing
 )
+
+// top list
+router.get('/top/users', authenticated, topController.getTopUsers)
 
 // administrator
 router.use('/admin', authenticatedAdmin, admin)
