@@ -64,6 +64,14 @@ router.delete(
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.deleteLike)
 
+//user following
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete(
+  '/following/:userId',
+  authenticated,
+  userController.removeFollowing
+)
+
 // administrator
 router.use('/admin', authenticatedAdmin, admin)
 router.get('/', (req, res) => res.redirect('/restaurants'))
