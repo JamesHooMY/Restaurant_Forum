@@ -13,17 +13,20 @@
       </a>
       <h2>{{this.name}}</h2>
       <span class="bg-dark badge">Followers: {{this.followerCount}}</span>
-      <p>
-        {{#if this.isFollowed }}
-          <form action="/following/{{this.id}}?_method=DELETE" method="POST" style="display: contents;">
-            <button type="submit" class="btn btn-danger">Unfollow</button>
-          </form>
+        {{#ifCond ../user.id this.id}}
         {{else}}
-          <form action="/following/{{this.id}}" method="POST" style="display: contents;">
-            <button type="submit" class="btn btn-primary">Follow</button>
-          </form>
-        {{/if}}
-      </p>
+          <p>
+            {{#if this.isFollowed }}
+              <form action="/following/{{this.id}}?_method=DELETE" method="POST" style="display: contents;">
+                <button type="submit" class="btn btn-danger">Unfollow</button>
+              </form>
+            {{else}}
+              <form action="/following/{{this.id}}" method="POST" style="display: contents;">
+                <button type="submit" class="btn btn-primary">Follow</button>
+              </form>
+            {{/if}}
+          </p>
+        {{/ifCond}}
     </div>
   {{/each}}
 </div>

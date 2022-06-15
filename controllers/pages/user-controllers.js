@@ -121,6 +121,8 @@ const userController = {
   editUser: async (req, res, next) => {
     try {
       const userId = req.params.id
+      if (Number(req.user.id) !== Number(userId))
+        throw new Error('You are not owner!')
 
       const user = await User.findByPk(userId, { raw: true })
       if (!user) throw new Error('User did not exists!')
@@ -134,6 +136,8 @@ const userController = {
     try {
       const userId = req.params.id
       const { name } = req.body
+      if (Number(req.user.id) !== Number(userId))
+        throw new Error('You are not owner!')
 
       const [user, file] = await Promise.all([
         User.findByPk(userId),
