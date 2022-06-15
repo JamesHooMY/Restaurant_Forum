@@ -25,6 +25,7 @@ app.engine('hbs', hbs.engine)
 app.set('view engine', 'hbs')
 
 app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
 app.use(express.static('public'))
 app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use(methodOverride('_method'))

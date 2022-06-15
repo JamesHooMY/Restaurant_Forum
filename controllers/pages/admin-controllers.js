@@ -12,7 +12,7 @@ const adminController = {
       err ? next(err) : res.render('admin/restaurants', data)
     )
   },
-  createRestaurant: async (req, res) => {
+  createRestaurant: async (req, res, next) => {
     try {
       const categories = await Category.findAll({ raw: true })
 
@@ -21,29 +21,10 @@ const adminController = {
       next(err)
     }
   },
-  postRestaurant: async (req, res, next) => {
-    try {
-      const { name, tel, address, openingHours, description, categoryId } =
-        req.body
-      if (!name) throw new Error('Restaurant name is required!')
-
-      const file = await imgurFileHandler(req.file) // multer process image in to "req.file"
-      await Restaurant.create({
-        name,
-        tel,
-        address,
-        openingHours,
-        description,
-        image: file?.link || null,
-        deleteHash: file?.deletehash || null,
-        categoryId,
-      })
-
-      req.flash('success_messages', 'restaurant was successfully created!')
-      return res.redirect('/admin/restaurants')
-    } catch (err) {
-      next(err)
-    }
+  postRestaurant: (req, res, next) => {
+    if (err) return next(err)
+    req.flash('success_messages', 'restaurant was successfully created!')
+    return res.redirect('/admin/restaurants', data)
   },
   getRestaurant: async (req, res, next) => {
     try {
@@ -109,9 +90,11 @@ const adminController = {
     }
   },
   deleteRestaurant: async (req, res, next) => {
-    adminServices.deleteRestaurant(req, (err, data) =>
-      err ? next(err) : res.redirect('/admin/restaurants', data)
-    )
+    adminServices.deleteRestaurant(req, (err, data) => {
+      if (err) return next(err)
+      req.flash('success_messages', 'restaurant was successfully deleted!')
+      return res.redirect('/admin/restaurants', data)
+    })
   },
 }
 

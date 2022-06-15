@@ -18,6 +18,29 @@ const adminService = {
       cb(err)
     }
   },
+  postRestaurant: async (req, cb) => {
+    try {
+      const { name, tel, address, openingHours, description, categoryId } =
+        req.body
+      if (!name) throw new Error('Restaurant name is required!')
+
+      const file = await imgurFileHandler(req.file) // multer process image in to "req.file"
+      const newRestaurant = await Restaurant.create({
+        name,
+        tel,
+        address,
+        openingHours,
+        description,
+        image: file?.link || null,
+        deleteHash: file?.deletehash || null,
+        categoryId,
+      })
+
+      return cb(null, newRestaurant)
+    } catch (err) {
+      cb(err)
+    }
+  },
   deleteRestaurant: async (req, cb) => {
     try {
       const restaurantId = req.params.id
@@ -25,9 +48,9 @@ const adminService = {
       const restaurant = await Restaurant.findByPk(restaurantId)
       if (!restaurant) throw new Error('Restaurant is not exist!')
 
+      await imgur.deleteImage(restaurant.toJSON().deleteHash)
       const deleteRestaurant = await restaurant.destroy()
 
-      req.flash('success_messages', 'restaurant was successfully deleted!')
       return cb(null, deleteRestaurant)
     } catch (err) {
       cb(err)
