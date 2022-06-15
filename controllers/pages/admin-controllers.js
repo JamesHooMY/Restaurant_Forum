@@ -3,21 +3,14 @@ const {
   localFileHandler,
   imgurFileHandler,
 } = require('../../helpers/file-helpers')
+const adminServices = require('../../services/admin-services')
 const imgur = require('imgur')
 
 const adminController = {
   getRestaurants: async (req, res, next) => {
-    try {
-      const restaurants = await Restaurant.findAll({
-        raw: true,
-        nest: true,
-        include: [Category],
-      })
-
-      return res.render('admin/restaurants', { restaurants })
-    } catch (err) {
-      next(err)
-    }
+    adminServices.getRestaurants(req, (err, data) =>
+      err ? next(err) : res.render('admin/restaurants', data)
+    )
   },
   createRestaurant: async (req, res) => {
     try {

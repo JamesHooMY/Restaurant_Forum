@@ -1,6 +1,6 @@
 const { Restaurant, Category, Comment, User, Like } = require('../../models')
 const { getOffset, getPagination } = require('../../helpers/pagination-helper')
-const restaurantServices = require('../../services/restaurant-service')
+const restaurantServices = require('../../services/restaurant-services')
 
 const restController = {
   getRestaurants: (req, res, next) => {
