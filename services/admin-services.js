@@ -18,5 +18,20 @@ const adminService = {
       cb(err)
     }
   },
+  deleteRestaurant: async (req, cb) => {
+    try {
+      const restaurantId = req.params.id
+
+      const restaurant = await Restaurant.findByPk(restaurantId)
+      if (!restaurant) throw new Error('Restaurant is not exist!')
+
+      const deleteRestaurant = await restaurant.destroy()
+
+      req.flash('success_messages', 'restaurant was successfully deleted!')
+      return cb(null, deleteRestaurant)
+    } catch (err) {
+      cb(err)
+    }
+  },
 }
 module.exports = adminService

@@ -7,7 +7,7 @@ const adminServices = require('../../services/admin-services')
 const imgur = require('imgur')
 
 const adminController = {
-  getRestaurants: async (req, res, next) => {
+  getRestaurants: (req, res, next) => {
     adminServices.getRestaurants(req, (err, data) =>
       err ? next(err) : res.render('admin/restaurants', data)
     )
@@ -109,19 +109,9 @@ const adminController = {
     }
   },
   deleteRestaurant: async (req, res, next) => {
-    try {
-      const restaurantId = req.params.id
-
-      const restaurant = await Restaurant.findByPk(restaurantId)
-      if (!restaurant) throw new Error('Restaurant is not exist!')
-
-      await restaurant.destroy()
-
-      req.flash('success_messages', 'restaurant was successfully deleted!')
-      return res.redirect('/admin/restaurants')
-    } catch (err) {
-      next(err)
-    }
+    adminServices.deleteRestaurant(req, (err, data) =>
+      err ? next(err) : res.redirect('/admin/restaurants', data)
+    )
   },
 }
 
