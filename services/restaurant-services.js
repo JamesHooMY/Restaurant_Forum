@@ -17,14 +17,8 @@ const restService = {
           include: [
             Category,
             Comment,
-            {
-              model: User,
-              as: 'FavoritedUsers',
-            },
-            {
-              model: User,
-              as: 'LikedUsers',
-            },
+            { model: User, as: 'FavoritedUsers' },
+            { model: User, as: 'LikedUsers' },
           ],
           where: { ...(categoryId ? { categoryId } : {}) },
           limit,
@@ -54,8 +48,8 @@ const restService = {
         isLiked: likedRestaurantIds?.includes(restaurant.id) || [],
 
         // favoritedUserCounts: restaurant.FavoritedUsers.length,
-        FavoritedUsers: restaurant.FavoritedUsers.length,
-        LikedUsers: restaurant.LikedUsers.length,
+        // FavoritedUsers: restaurant.FavoritedUsers.length,
+        // LikedUsers: restaurant.LikedUsers.length,
 
         Comments: restaurant.Comments.length,
       }))

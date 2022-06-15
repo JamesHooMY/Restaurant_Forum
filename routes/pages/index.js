@@ -75,6 +75,7 @@ router.delete(
 
 // top list
 router.get('/top/users', authenticated, topController.getTopUsers)
+router.get('/top/restaurants', authenticated, topController.getTopRestaurants)
 
 // administrator
 router.use('/admin', authenticatedAdmin, admin)

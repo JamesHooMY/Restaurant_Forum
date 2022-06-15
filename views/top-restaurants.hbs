@@ -1,0 +1,46 @@
+
+{{> restaurant-tabs route='topRestaurants'}}
+<h1>人氣餐廳</h1>
+<hr />  
+<div class="row">
+  {{#each restaurants}}
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card mb-4 shadow-sm flex-row">
+        <a href="/restaurant/{{this.id}}">
+          <img class="card-img-top img-fluid" src="{{this.image}}" alt="Card image cap" width="286px" height="180px"
+            style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+        </a>
+        <div class="card-body w-75">
+          <p class="card-text">
+            <a href="/restaurant/{{this.id}}">
+              {{this.name}}
+            </a>
+          </p>
+          <p class="card-text" style="font-size: 1rem;">{{this.description}}</p>
+          <div class="d-flex">
+            <form action='/favorite/{{this.id}}{{#if this.isFavorited}}?_method=DELETE{{/if}}' method='POST'>
+              <button type='submit' class='btn position-relative'>
+                <i
+                  class='fa-solid fa-heart fa-lg me-1'
+                  type='button'
+                  {{#if this.isFavorited}}
+                  style='color:red'
+                  {{else}}
+                  style='color:black'
+                  {{/if}}
+                ></i>
+                <span
+                  class='position-absolute top-50 start-100 translate-middle badge rounded-pill text-dark'
+                >
+                  {{this.favoritedCount}}
+                </span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{/each}}
+</div>

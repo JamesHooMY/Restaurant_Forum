@@ -7,6 +7,7 @@ const {
   Followship,
   sequelize,
 } = require('../../models')
+const helpers = require('../../helpers/auth-helpers')
 
 const topController = {
   getTopUsers: async (req, res, next) => {
@@ -24,6 +25,32 @@ const topController = {
         .sort((a, b) => b.followerCount - a.followerCount)
 
       res.render('top-users', { users: users })
+    } catch (err) {
+      next(err)
+    }
+  },
+  getTopRestaurants: async (req, res, next) => {
+    try {
+      const restaurants = await Restaurant.findAll({
+        include: [{ model: User, as: 'FavoritedUsers' }],
+      })
+
+      const userId = helpers.getUser(req).id
+      const limit = 10
+
+      const result = restaurants
+        .map((restaurant) => ({
+          ...restaurant.toJSON(),
+          description: restaurant.description.substring(0, 50),
+          favoritedCount: restaurant.FavoritedUsers.length,
+          isFavorited: restaurant.FavoritedUsers.some(
+            (user) => Number(user.id) === Number(userId)
+          ),
+        }))
+        .sort((a, b) => b.favoritedCount - a.favoritedCount)
+        .slice(0, limit)
+
+      res.render('top-restaurants', { restaurants: result })
     } catch (err) {
       next(err)
     }
