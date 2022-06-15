@@ -24,6 +24,17 @@ router.post(
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 
+// user profile
+router.get('/user/:id/edit', authenticated, userController.editUser)
+router.put(
+  '/user/:id',
+  authenticated,
+  upload.single('image'),
+  userController.putUser
+)
+router.get('/user/:id', authenticated, userController.getUser)
+router.get('/top/users', authenticated, userController.getTopUsers)
+
 // user comments
 router.post('/comment', authenticated, commentController.postComment)
 router.delete(
@@ -52,16 +63,6 @@ router.delete(
 //user like restaurants
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.deleteLike)
-
-// user profile
-router.get('/user/:id/edit', authenticated, userController.editUser)
-router.put(
-  '/user/:id',
-  authenticated,
-  upload.single('image'),
-  userController.putUser
-)
-router.get('/user/:id', authenticated, userController.getUser)
 
 // administrator
 router.use('/admin', authenticatedAdmin, admin)
