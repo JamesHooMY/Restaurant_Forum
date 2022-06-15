@@ -8,7 +8,7 @@ module.exports = {
     res.redirect('back')
     next(err)
   },
-  apiErrorHandler(err, req, res, next) {
+  apiErrorHandler(err, res) {
     if (err instanceof Error) {
       res.status(500).json({
         status: 'error',

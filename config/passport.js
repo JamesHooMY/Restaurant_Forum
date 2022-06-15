@@ -29,7 +29,7 @@ passport.use(
           )
         return cb(null, user)
       } catch (err) {
-        return cb(null, false, req.flash('error_messages', `${err}`))
+        return cb(err)
       }
     }
   )
