@@ -80,12 +80,18 @@ const userController = {
   },
   getUser: async (req, res, next) => {
     try {
-      const userId = req.params.id
+      const user = req.user
+      const queryUserId = req.params.id
 
-      let [user, comments] = await Promise.all([
-        User.findByPk(userId),
+      let [queryUser, comments] = await Promise.all([
+        User.findByPk(queryUserId, {
+          include: [
+            { model: User, as: 'Followers' },
+            { model: User, as: 'Followings' },
+          ],
+        }),
         Comment.findAll({
-          where: { userId },
+          where: { userId: queryUserId },
           attributes: [
             [
               sequelize.fn('COUNT', sequelize.col('restaurant_id')),
@@ -98,16 +104,16 @@ const userController = {
           nest: true,
         }),
       ])
-      if (!user) throw new Error('User did not exists!')
+      if (!queryUser) throw new Error('User did not exists!')
 
-      user = user.toJSON()
-      user.restaurantComments = comments
-      user.totalComments = comments.reduce(
+      queryUser = queryUser.toJSON()
+      queryUser.restaurantComments = comments
+      queryUser.totalComments = comments.reduce(
         (accumulator, comment) => accumulator + comment.restaurantCommentCounts,
         0
       )
 
-      return res.render('user/profile', { user })
+      return res.render('user/profile', { queryUser })
     } catch (err) {
       next(err)
     }

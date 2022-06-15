@@ -12,7 +12,7 @@
         {{/if}}
       </a>
       <h2>{{this.name}}</h2>
-      <span class="bg-secondary badge">Followers: {{this.followerCount}}</span>
+      <span class="bg-dark badge">Followers: {{this.followerCount}}</span>
       <p>
         {{#if this.isFollowed }}
           <form action="/following/{{this.id}}?_method=DELETE" method="POST" style="display: contents;">

@@ -2,7 +2,7 @@
   <div class='col-md-4'>
     <img
       class='img-responsive center-block mb-5'
-      src='{{user.image}}'
+      src='{{queryUser.image}}'
       style='width: 250px; transition: opacity 0.5s; opacity:0;'
       onload='this.style.opacity=1;'
     />
@@ -10,53 +10,27 @@
 
   <div class='col-md-8'>
     <div class='row'>
-      <h2 class='col-2' style='display: inline;'>{{user.name}}</h2>
-      <a
-        class='btn btn-outline-success col-2'
-        href='/user/{{user.id}}/edit'
-        style='display: inline;'
-      >Edit</a>
+      <h2 class='col-2' style='display: inline;'>{{queryUser.name}}</h2>
+      {{#ifCond user.id queryUser.id}}
+        <a class='btn btn-outline-success col-2 d-flex justify-content-center align-items-center' href='/user/{{user.id}}/edit' style='display: inline;'>Edit</a>
+      {{/ifCond}}
     </div>
-    <h3>{{user.email}}</h3>
+    <h3>{{queryUser.email}}</h3>
     <div class='d-flex flex-nowrap gap-3 mb-3'>
       <button type='button' class='btn position-relative' disabled>
-        <i
-          class='fa-solid fa-comment-dots fa-lg me-1'
-          type='button'
-          style='color:black'
-        ></i>
-        <span
-          class='position-absolute top-50 start-100 translate-middle badge rounded-pill text-dark'
-        >
-          {{user.totalComments}}
+        <i class='fa-solid fa-comment-dots fa-lg me-1' type='button'style='color:black'></i>
+        <span class='position-absolute top-50 start-100 translate-middle badge rounded-pill text-dark'>
+          {{queryUser.totalComments}}
         </span>
       </button>
-      <form action='/user/{{user.id}}' method='POST'>
+      <form action='/user/{{queryUser.id}}' method='POST'>
         <button type='submit' class='btn position-relative'>
-          <i
-            class='fa-solid fa-heart fa-lg me-1'
-            type='button'
-            style='color:red'
-          ></i>
-          <span
-            class='position-absolute top-50 start-100 translate-middle badge rounded-pill text-dark'
-          >
-            99+
-          </span>
+          <span class="bg-dark badge">Followers: {{queryUser.Followers.length}}</span>
         </button>
       </form>
-      <form action='/user/{{user.id}}' method='POST'>
+      <form action='/user/{{queryUser.id}}' method='POST'>
         <button type='submit' class='btn position-relative'>
-          <i
-            class='fa-solid fa-thumbs-up fa-lg me-1'
-            type='button'
-            style='color:blue'
-          ></i>
-          <span
-            class='position-absolute top-50 start-100 translate-middle badge rounded-pill text-dark'
-          >
-            99+
-          </span>
+          <span class="bg-secondary badge">Followings: {{queryUser.Followings.length}}</span>
         </button>
       </form>
     </div>
@@ -67,10 +41,10 @@
 <div class='row'>
   <div class='col-12'>
     <div class='card mb-3'>
-      <div class='card-header'>{{user.restaurantComments.length}}
+      <div class='card-header'>{{queryUser.restaurantComments.length}}
         Commented restaurants</div>
       <div class='card-body'>
-        {{#each user.restaurantComments}}
+        {{#each queryUser.restaurantComments}}
           <a
             href='/restaurant/{{this.Restaurant.id}}'
             class='text-decoration-none'
