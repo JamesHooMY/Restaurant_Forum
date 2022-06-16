@@ -37,21 +37,12 @@
   </form>
   <hr class='my-4' />
   <div class='social-media d-flex justify-content-center mb-3'>
-    <form action='#' method='POST'><a class='btn' href='#'><i
-          class='fa-brands fa-facebook fa-2xl'
-          style='color: #0d6efd'
-        ></i></a>
-    </form>
-    <form action='#' method='POST'><a class='btn' href='#'><i
-          class='fa-brands fa-google fa-2xl'
-          style='color: #0d6efd'
-        ></i></a>
-    </form>
-    <form action='#' method='POST'><a class='btn' href='#'><i
-          class='fa-brands fa-twitter fa-2xl'
-          style='color: #0d6efd'
-        ></i></a>
-    </form>
+    {{!-- <form action='/auth/facebook' method='POST'> --}}
+      <a class='btn' href='/auth/facebook'><i class='fa-brands fa-facebook fa-2xl' style='color: #0d6efd'></i></a>
+    {{!-- </form> --}}
+    {{!-- <form action='/auth/google' method='POST'> --}}
+      <a class='btn' href='/auth/google'><i class='fa-brands fa-google fa-2xl' style='color: #0d6efd'></i></a>
+    {{!-- </form> --}}
   </div>
   <div class='text-center'>
     <p>No account ? <a href='/signup'>Sign Up</a></p>

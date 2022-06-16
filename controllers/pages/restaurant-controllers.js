@@ -16,14 +16,8 @@ const restController = {
         include: [
           Category,
           { model: Comment, include: User },
-          {
-            model: User,
-            as: 'FavoritedUsers',
-          },
-          {
-            model: User,
-            as: 'LikedUsers',
-          },
+          { model: User, as: 'FavoritedUsers' },
+          { model: User, as: 'LikedUsers' },
         ],
         order: [[Comment, 'createdAt', 'DESC']],
       })

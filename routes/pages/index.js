@@ -8,6 +8,7 @@ const topController = require('../../controllers/pages/top-controllers')
 
 const passport = require('../../config/passport')
 const admin = require('./modules/admin')
+const auth = require('./modules/auth')
 const { generalErrorHandler } = require('../../middleware/error-handler')
 const { authenticated, authenticatedAdmin } = require('../../middleware/auth')
 const upload = require('../../middleware/multer')
@@ -80,6 +81,7 @@ router.get('/top/restaurants', authenticated, topController.getTopRestaurants)
 // administrator
 router.use('/admin', authenticatedAdmin, admin)
 router.get('/', (req, res) => res.redirect('/restaurants'))
+router.use('/auth', auth)
 router.use('/', generalErrorHandler)
 
 module.exports = router
