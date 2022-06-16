@@ -20,17 +20,17 @@
       <button type='button' class='btn position-relative' disabled>
         <i class='fa-solid fa-comment-dots fa-lg me-1' type='button'style='color:black'></i>
         <span class='position-absolute top-50 start-100 translate-middle badge rounded-pill text-dark'>
-          {{queryUser.totalComments}}
+          {{queryUser.commentCounts}}
         </span>
       </button>
       <form action='/user/{{queryUser.id}}' method='POST'>
         <button type='submit' class='btn position-relative'>
-          <span class="bg-dark badge">Followers: {{queryUser.Followers.length}}</span>
+          <span class="bg-dark badge">Followers: {{queryUser.followerCounts}}</span>
         </button>
       </form>
       <form action='/user/{{queryUser.id}}' method='POST'>
         <button type='submit' class='btn position-relative'>
-          <span class="bg-secondary badge">Followings: {{queryUser.Followings.length}}</span>
+          <span class="bg-secondary badge">Followings: {{queryUser.followingCounts}}</span>
         </button>
       </form>
     </div>
@@ -41,10 +41,10 @@
 <div class='row'>
   <div class='col-12'>
     <div class='card mb-3'>
-      <div class='card-header'>{{queryUser.restaurantComments.length}}
+      <div class='card-header'>{{comments.length}}
         Commented restaurants</div>
       <div class='card-body'>
-        {{#each queryUser.restaurantComments}}
+        {{#each comments}}
           <a
             href='/restaurant/{{this.Restaurant.id}}'
             class='text-decoration-none'

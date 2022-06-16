@@ -52,10 +52,10 @@ passport.use(
       console.log(jwtPayload)
       const user = await User.findByPk(jwtPayload.id, {
         include: [
-          { model: Restaurant, as: 'FavoritedRestaurants' },
-          { model: Restaurant, as: 'LikedRestaurants' },
-          { model: User, as: 'Followers' },
-          { model: User, as: 'Followings' },
+          { model: Restaurant, as: 'FavoritedRestaurants', attributes: ['id'] },
+          { model: Restaurant, as: 'LikedRestaurants', attributes: ['id'] },
+          { model: User, as: 'Followers', attributes: ['id'] },
+          { model: User, as: 'Followings', attributes: ['id'] },
         ],
       })
 
@@ -137,10 +137,10 @@ passport.deserializeUser(async (id, cb) => {
   try {
     let user = await User.findByPk(id, {
       include: [
-        { model: Restaurant, as: 'FavoritedRestaurants' },
-        { model: Restaurant, as: 'LikedRestaurants' },
-        { model: User, as: 'Followers' },
-        { model: User, as: 'Followings' },
+        { model: Restaurant, as: 'FavoritedRestaurants', attributes: ['id'] },
+        { model: Restaurant, as: 'LikedRestaurants', attributes: ['id'] },
+        { model: User, as: 'Followers', attributes: ['id'] },
+        { model: User, as: 'Followings', attributes: ['id'] },
       ],
     })
     user = user.toJSON()

@@ -85,35 +85,77 @@ const userController = {
 
       let [queryUser, comments] = await Promise.all([
         User.findByPk(queryUserId, {
-          include: [
-            { model: User, as: 'Followers' },
-            { model: User, as: 'Followings' },
-          ],
-        }),
-        Comment.findAll({
-          where: { userId: queryUserId },
           attributes: [
+            'id',
+            'name',
+            'email',
+            'image',
             [
-              sequelize.fn('COUNT', sequelize.col('restaurant_id')),
-              'restaurantCommentCounts',
+              sequelize.literal(
+                '(SELECT COUNT(DISTINCT id) FROM Comments WHERE Comments.user_id = User.id)'
+              ),
+              'commentCounts',
+            ],
+            [
+              sequelize.literal(
+                '(SELECT COUNT(DISTINCT id) FROM Followships WHERE Followships.following_id = User.id)'
+              ),
+              'followerCounts',
+            ],
+            [
+              sequelize.literal(
+                '(SELECT COUNT(DISTINCT id) FROM Followships WHERE Followships.follower_id = User.id)'
+              ),
+              'followingCounts',
             ],
           ],
-          group: ['restaurant_id'],
-          include: [Restaurant],
+          // include: [
+          //   { model: User, as: 'Followers', attributes: ['id'] },
+          //   { model: User, as: 'Followings', attributes: ['id'] },
+          //   { model: Comment, attributes: ['id'] },
+          // ],
           raw: true,
           nest: true,
         }),
+        Comment.findAll({
+          where: { userId: queryUserId },
+          attributes: ['restaurantId'],
+          include: [
+            {
+              model: Restaurant,
+              attributes: ['id', 'image'],
+            },
+          ],
+          group: 'restaurantId',
+          raw: true,
+          nest: true,
+        }),
+        // Comment.findAll({
+        //   where: { userId: queryUserId },
+        //   attributes: [
+        //     [
+        //       sequelize.fn('COUNT', sequelize.col('restaurant_id')),
+        //       'restaurantCommentCounts',
+        //     ],
+        //   ],
+        //   group: ['restaurant_id'],
+        //   include: [Restaurant],
+        //   raw: true,
+        //   nest: true,
+        // }),
       ])
       if (!queryUser) throw new Error('User did not exists!')
 
-      queryUser = queryUser.toJSON()
-      queryUser.restaurantComments = comments
-      queryUser.totalComments = comments.reduce(
-        (accumulator, comment) => accumulator + comment.restaurantCommentCounts,
-        0
-      )
+      // queryUser = queryUser.toJSON()
+      // queryUser.restaurantComments = comments
+      // queryUser.totalComments = comments.reduce(
+      //   (accumulator, comment) => accumulator + comment.restaurantCommentCounts,
+      //   0
+      // )
 
-      return res.render('user/profile', { queryUser })
+      // console.log(queryUser)
+      console.log(comments)
+      return res.render('user/profile', { queryUser, comments })
     } catch (err) {
       next(err)
     }
