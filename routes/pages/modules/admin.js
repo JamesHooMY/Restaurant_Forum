@@ -6,14 +6,19 @@ const adminController = require('../../../controllers/pages/admin-controllers')
 const categoryController = require('../../../controllers/pages/category-controllers')
 const userController = require('../../../controllers/pages/user-controllers')
 
+// admin control users
 router.get('/users', userController.getUsers)
 router.patch('/user/:id', userController.patchUser)
+
+// admin control categorties
 router.get('/category/:id', categoryController.getCategories)
 router.post('/category', categoryController.postCategory)
 router.put('/category/:id', categoryController.putCategory)
 router.delete('/category/:id', categoryController.deleteCategory)
 router.post('/category/:id', categoryController.restoreCategory)
 router.get('/categories', categoryController.getCategories)
+
+// admin control restaurants
 router.get('/restaurant/create', adminController.createRestaurant)
 router.post(
   '/restaurant',
