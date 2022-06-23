@@ -52,7 +52,7 @@
               <button type="button" class="btn position-relative" disabled>
                 <i class="fa-solid fa-comment-dots fa-lg me-1" type="button" style="color:black"></i>
                 <span class="position-absolute top-50 start-100 translate-middle badge rounded-pill text-dark">
-                  {{this.Comments}}
+                  {{this.commentCounts}}
                 </span>
               </button>
               <form action='/like/{{this.id}}{{#if this.isLiked}}?_method=DELETE{{/if}}' method='POST'>
