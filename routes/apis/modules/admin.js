@@ -6,6 +6,7 @@ const upload = require('../../../middleware/multer')
 
 // admin control users
 router.get('/users', userController.getUsers)
+router.patch('/user/:id', userController.patchUser)
 
 // admin control restaurants
 router.delete('/restaurants/:id', adminController.deleteRestaurant)

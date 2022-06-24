@@ -40,16 +40,12 @@ const userController = {
   },
   patchUser: async (req, res, next) => {
     try {
-      const userId = req.params.id
+      userServices.patchUser(req, (err, data) => {
+        if (err) return next(err)
+        req.flash('success_messages', `Identity of ${data.name} was changed successfully!`)
 
-      const user = await User.findByPk(userId)
-      if (!user) throw new Error('User did not exists!')
-      if (user.email === 'root@example.com') throw new Error('The identity of root@example.com can not be changed!')
-
-      await user.update({ isAdmin: !user.isAdmin })
-
-      req.flash('success_messages', 'Identity of user was changed successfully!')
-      return res.redirect('/admin/users')
+        return res.redirect('/admin/users')
+      })
     } catch (err) {
       next(err)
     }

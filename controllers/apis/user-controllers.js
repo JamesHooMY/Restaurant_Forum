@@ -20,7 +20,14 @@ const userController = {
   },
   getUsers: (req, res, next) => {
     try {
-      userServices.getUsers(req, (err, data) => (err ? next(err) : res.json({ status: 'success', data })))
+      userServices.getUsers(req, (err, data) => (err ? next(err) : res.status(200).json({ status: 'success', data })))
+    } catch (err) {
+      next(err)
+    }
+  },
+  patchUser: (req, res, next) => {
+    try {
+      userServices.patchUser(req, (err, data) => (err ? next(err) : res.status(200).json({ status: 'success', data })))
     } catch (err) {
       next(err)
     }
