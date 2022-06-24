@@ -1,4 +1,4 @@
-const { User } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like, Followship, sequelize } = require('../models')
 const bcrypt = require('bcryptjs')
 const { localFileHandler, imgurFileHandler } = require('../helpers/file-helpers')
 const imgur = require('imgur')
@@ -47,6 +47,57 @@ const userService = {
       const updatedUser = await user.update({ isAdmin: !user.isAdmin })
 
       return cb(null, { users: updatedUser })
+    } catch (err) {
+      cb(err)
+    }
+  },
+  getUser: async (req, cb) => {
+    try {
+      const user = req.user
+      const queryUserId = req.params.id
+
+      let [queryUser, comments] = await Promise.all([
+        User.findByPk(queryUserId, {
+          attributes: [
+            'id',
+            'name',
+            'email',
+            'image',
+            [
+              sequelize.literal('(SELECT COUNT(DISTINCT id) FROM Comments WHERE Comments.user_id = User.id)'),
+              'commentCounts',
+            ],
+            [
+              sequelize.literal(
+                '(SELECT COUNT(DISTINCT id) FROM Followships WHERE Followships.following_id = User.id)'
+              ),
+              'followerCounts',
+            ],
+            [
+              sequelize.literal('(SELECT COUNT(DISTINCT id) FROM Followships WHERE Followships.follower_id = User.id)'),
+              'followingCounts',
+            ],
+          ],
+          raw: true,
+          nest: true,
+        }),
+        Comment.findAll({
+          where: { userId: queryUserId },
+          attributes: ['restaurantId'],
+          include: [
+            {
+              model: Restaurant,
+              attributes: ['id', 'image'],
+            },
+          ],
+          group: 'restaurantId',
+          raw: true,
+          nest: true,
+        }),
+      ])
+      if (!queryUser) throw new Error('User did not exists!')
+
+      return cb(null, { queryUser, comments })
     } catch (err) {
       cb(err)
     }

@@ -52,78 +52,7 @@ const userController = {
   },
   getUser: async (req, res, next) => {
     try {
-      const user = req.user
-      const queryUserId = req.params.id
-
-      let [queryUser, comments] = await Promise.all([
-        User.findByPk(queryUserId, {
-          attributes: [
-            'id',
-            'name',
-            'email',
-            'image',
-            [
-              sequelize.literal('(SELECT COUNT(DISTINCT id) FROM Comments WHERE Comments.user_id = User.id)'),
-              'commentCounts',
-            ],
-            [
-              sequelize.literal(
-                '(SELECT COUNT(DISTINCT id) FROM Followships WHERE Followships.following_id = User.id)'
-              ),
-              'followerCounts',
-            ],
-            [
-              sequelize.literal('(SELECT COUNT(DISTINCT id) FROM Followships WHERE Followships.follower_id = User.id)'),
-              'followingCounts',
-            ],
-          ],
-          // include: [
-          //   { model: User, as: 'Followers', attributes: ['id'] },
-          //   { model: User, as: 'Followings', attributes: ['id'] },
-          //   { model: Comment, attributes: ['id'] },
-          // ],
-          raw: true,
-          nest: true,
-        }),
-        Comment.findAll({
-          where: { userId: queryUserId },
-          attributes: ['restaurantId'],
-          include: [
-            {
-              model: Restaurant,
-              attributes: ['id', 'image'],
-            },
-          ],
-          group: 'restaurantId',
-          raw: true,
-          nest: true,
-        }),
-        // Comment.findAll({
-        //   where: { userId: queryUserId },
-        //   attributes: [
-        //     [
-        //       sequelize.fn('COUNT', sequelize.col('restaurant_id')),
-        //       'restaurantCommentCounts',
-        //     ],
-        //   ],
-        //   group: ['restaurant_id'],
-        //   include: [Restaurant],
-        //   raw: true,
-        //   nest: true,
-        // }),
-      ])
-      if (!queryUser) throw new Error('User did not exists!')
-
-      // queryUser = queryUser.toJSON()
-      // queryUser.restaurantComments = comments
-      // queryUser.totalComments = comments.reduce(
-      //   (accumulator, comment) => accumulator + comment.restaurantCommentCounts,
-      //   0
-      // )
-
-      // console.log(queryUser)
-      console.log(comments)
-      return res.render('user/profile', { queryUser, comments })
+      userServices.getUser(req, (err, data) => (err ? next(err) : res.render('user/profile', data)))
     } catch (err) {
       next(err)
     }

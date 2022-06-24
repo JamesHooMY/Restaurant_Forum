@@ -12,9 +12,7 @@ const topController = {
           'name',
           'image',
           [
-            sequelize.literal(
-              '(SELECT COUNT(DISTINCT id) FROM Followships WHERE Followships.following_id = User.id)'
-            ),
+            sequelize.literal('(SELECT COUNT(DISTINCT id) FROM Followships WHERE Followships.following_id = User.id)'),
             'followerCounts',
           ],
           [
@@ -30,7 +28,7 @@ const topController = {
 
       users = users.map((user) => ({ ...user.toJSON() }))
 
-      console.log(users)
+      // console.log(users)
       // let users = await User.findAll({
       //   include: [{ model: User, as: 'Followers', attributes: ['id'] }],
       // })

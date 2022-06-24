@@ -24,13 +24,6 @@ passport.use(
         const passwordIsMatched = await bcrypt.compare(password, user.password)
         if (!passwordIsMatched) throw new Error('Account or password is incorrect!')
 
-        // if (!user)
-        //   return cb(null, false, req.flash('error_messages', 'Account or password is incorrect!'))
-
-        // const res = await bcrypt.compare(password, user.password)
-        // if (!res)
-        //   return cb(null, false, req.flash('error_messages', 'Account or password is incorrect!'))
-
         return cb(null, user)
       } catch (err) {
         return cb(err)
@@ -81,7 +74,7 @@ passport.use(
         const randomPassword = Math.random().toString(36).slice(-8)
         const salt = await bcrypt.genSalt(10)
         const hash = await bcrypt.hash(randomPassword, salt)
-        // for new user creation
+
         user = await User.create({
           name,
           email,
@@ -112,7 +105,6 @@ passport.use(
         const randomPassword = Math.random().toString(36).slice(-8)
         const salt = await bcrypt.genSalt(10)
         const hash = await bcrypt.hash(randomPassword, salt)
-        // for new user creation
 
         user = await User.create({
           name,
