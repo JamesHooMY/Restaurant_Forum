@@ -28,6 +28,10 @@ router.delete('/favorite/:restaurantId', authenticated, userController.deleteFav
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.deleteLike)
 
+//user following
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete('/following/:userId', authenticated, userController.removeFollowing)
+
 // administrator
 router.use('/admin', authenticated, authenticatedAdmin, admin)
 router.use('/', apiErrorHandler)

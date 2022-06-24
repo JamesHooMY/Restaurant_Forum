@@ -82,6 +82,20 @@ const userController = {
       next(err)
     }
   },
+  addFollowing: (req, res, next) => {
+    try {
+      userServices.addFollowing(req, (err, data) => (err ? next(err) : res.status(200).json({ status: 'success', data })))
+    } catch (err) {
+      next(err)
+    }
+  },
+  removeFollowing: (req, res, next) => {
+    try {
+      userServices.removeFollowing(req, (err, data) => (err ? next(err) : res.status(200).json({ status: 'success', data })))
+    } catch (err) {
+      next(err)
+    }
+  },
 }
 
 module.exports = userController

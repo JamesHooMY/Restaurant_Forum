@@ -111,40 +111,18 @@ const userController = {
     }
   },
   addFollowing: (req, res, next) => {
-    const { userId } = req.params
-    Promise.all([
-      User.findByPk(userId),
-      Followship.findOne({
-        where: {
-          followerId: req.user.id,
-          followingId: req.params.userId,
-        },
-      }),
-    ])
-      .then(([user, followship]) => {
-        if (!user) throw new Error("User didn't exist!")
-        if (followship) throw new Error('You are already following this user!')
-        return Followship.create({
-          followerId: req.user.id,
-          followingId: userId,
-        })
-      })
-      .then(() => res.redirect('back'))
-      .catch((err) => next(err))
+    try {
+      userServices.addFollowing(req, (err, data) => err(err ? next(err) : res.redirect('back')))
+    } catch (err) {
+      next(err)
+    }
   },
   removeFollowing: (req, res, next) => {
-    Followship.findOne({
-      where: {
-        followerId: req.user.id,
-        followingId: req.params.userId,
-      },
-    })
-      .then((followship) => {
-        if (!followship) throw new Error("You haven't followed this user!")
-        return followship.destroy()
-      })
-      .then(() => res.redirect('back'))
-      .catch((err) => next(err))
+    try {
+      userServices.removeFollowing(req, (err, data) => err(err ? next(err) : res.redirect('back')))
+    } catch (err) {
+      next(err)
+    }
   },
 }
 

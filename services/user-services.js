@@ -173,5 +173,46 @@ const userService = {
       cb(err)
     }
   },
+  addFollowing: async (req, cb) => {
+    try {
+      const { userId } = req.params
+      const [user, followship] = await Promise.all([
+        User.findByPk(userId),
+        Followship.findOne({
+          where: {
+            followerId: req.user.id,
+            followingId: req.params.userId,
+          },
+        }),
+      ])
+
+      if (!user) throw new Error("User didn't exist!")
+      if (followship) throw new Error('You are already following this user!')
+
+      const addedFollowing = await Followship.create({ followerId: req.user.id, followingId: userId })
+
+      return cb(null, { user: { id: req.user.id }, followship: addedFollowing })
+    } catch (err) {
+      cb(err)
+    }
+  },
+  removeFollowing: async (req, cb) => {
+    try {
+      const followship = await Followship.findOne({
+        where: {
+          followerId: req.user.id,
+          followingId: req.params.userId,
+        },
+      })
+
+      if (!followship) throw new Error("You haven't followed this user!")
+
+      const removedFollwing = await followship.destroy()
+
+      return cb(null, { user: { id: req.user.id }, followship: removedFollwing })
+    } catch (err) {
+      cb(err)
+    }
+  },
 }
 module.exports = userService
