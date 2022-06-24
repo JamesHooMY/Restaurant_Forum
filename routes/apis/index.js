@@ -19,6 +19,8 @@ router.put('/user/:id', authenticated, upload.single('image'), userController.pu
 router.get('/user/:id', authenticated, userController.getUser)
 
 // user browse restaurants
+router.get('/restaurant/:id', authenticated, restController.getRestaurant)
+router.get('/restaurants/news', authenticated, restController.getNews)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 
 //user favorite restaurants
