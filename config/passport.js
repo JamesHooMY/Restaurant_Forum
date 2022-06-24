@@ -19,20 +19,18 @@ passport.use(
     async (req, email, password, cb) => {
       try {
         const user = await User.findOne({ where: { email } })
-        if (!user)
-          return cb(
-            null,
-            false,
-            req.flash('error_messages', 'Account or password is incorrect!')
-          )
+        if (!user) throw new Error('Account or password is incorrect!')
 
-        const res = await bcrypt.compare(password, user.password)
-        if (!res)
-          return cb(
-            null,
-            false,
-            req.flash('error_messages', 'Account or password is incorrect!')
-          )
+        const passwordIsMatched = await bcrypt.compare(password, user.password)
+        if (!passwordIsMatched) throw new Error('Account or password is incorrect!')
+
+        // if (!user)
+        //   return cb(null, false, req.flash('error_messages', 'Account or password is incorrect!'))
+
+        // const res = await bcrypt.compare(password, user.password)
+        // if (!res)
+        //   return cb(null, false, req.flash('error_messages', 'Account or password is incorrect!'))
+
         return cb(null, user)
       } catch (err) {
         return cb(err)
@@ -49,7 +47,6 @@ const jwtOptions = {
 passport.use(
   new JWTStrategy(jwtOptions, async (jwtPayload, cb) => {
     try {
-      console.log(jwtPayload)
       const user = await User.findByPk(jwtPayload.id, {
         include: [
           { model: Restaurant, as: 'FavoritedRestaurants', attributes: ['id'] },
@@ -74,12 +71,12 @@ passport.use(
       callbackURL: process.env.FACEBOOK_CALLBACK,
       profileFields: ['email', 'displayName'],
     },
-    async (accessToken, refreshToken, profile, done) => {
+    async (accessToken, refreshToken, profile, cb) => {
       try {
         const { name, email } = profile._json
 
         let user = await User.findOne({ where: { email } })
-        if (user) return done(null, user)
+        if (user) return cb(null, user)
 
         const randomPassword = Math.random().toString(36).slice(-8)
         const salt = await bcrypt.genSalt(10)
@@ -90,9 +87,9 @@ passport.use(
           email,
           password: hash,
         })
-        return done(null, user)
+        return cb(null, user)
       } catch (err) {
-        return done(null, false)
+        return cb(null, false)
       }
     }
   )
@@ -105,12 +102,12 @@ passport.use(
       clientSecret: process.env.GOOGLE_SECRECT,
       callbackURL: process.env.GOOGLE_CALLBACK,
     },
-    async (accessToken, refreshToken, profile, done) => {
+    async (accessToken, refreshToken, profile, cb) => {
       try {
         const { name, email } = profile._json
 
         const user = await User.findOne({ where: { email } })
-        if (user) return done(null, user)
+        if (user) return cb(null, user)
 
         const randomPassword = Math.random().toString(36).slice(-8)
         const salt = await bcrypt.genSalt(10)
@@ -122,9 +119,9 @@ passport.use(
           email,
           password: hash,
         })
-        return done(null, user)
+        return cb(null, user)
       } catch (err) {
-        return done(null, false)
+        return cb(null, false)
       }
     }
   )

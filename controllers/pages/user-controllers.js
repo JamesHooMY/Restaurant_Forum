@@ -1,14 +1,7 @@
 const bcrypt = require('bcryptjs')
-const {
-  User,
-  Comment,
-  Restaurant,
-  Favorite,
-  Like,
-  Followship,
-  sequelize,
-} = require('../../models')
+const { User, Comment, Restaurant, Favorite, Like, Followship, sequelize } = require('../../models')
 const { imgurFileHandler } = require('../../helpers/file-helpers')
+const userServices = require('../../services/user-services')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -16,22 +9,11 @@ const userController = {
   },
   signUp: async (req, res, next) => {
     try {
-      const { name, email, password, passwordCheck } = req.body
-      if (password !== passwordCheck) throw new Error('Passwords do not match!')
-
-      const user = await User.findOne({ where: { email: req.body.email } })
-      if (user) throw new Error('Email already exists!')
-
-      const hash = await bcrypt.hash(req.body.password, 10)
-
-      await User.create({
-        name: req.body.name,
-        email: req.body.email,
-        password: hash,
+      userServices.signUp(req, (err, data) => {
+        if (err) return next(err)
+        req.flash('success_messages', 'Sign up successfully!')
+        res.redirect('/signin')
       })
-
-      req.flash('success_messages', 'Sign up successfully!')
-      return res.redirect('/signin')
     } catch (err) {
       next(err)
     }
@@ -64,15 +46,11 @@ const userController = {
 
       const user = await User.findByPk(userId)
       if (!user) throw new Error('User did not exists!')
-      if (user.email === 'root@example.com')
-        throw new Error('The identity of root@example.com can not be changed!')
+      if (user.email === 'root@example.com') throw new Error('The identity of root@example.com can not be changed!')
 
       await user.update({ isAdmin: !user.isAdmin })
 
-      req.flash(
-        'success_messages',
-        'Identity of user was changed successfully!'
-      )
+      req.flash('success_messages', 'Identity of user was changed successfully!')
       return res.redirect('/admin/users')
     } catch (err) {
       next(err)
@@ -91,9 +69,7 @@ const userController = {
             'email',
             'image',
             [
-              sequelize.literal(
-                '(SELECT COUNT(DISTINCT id) FROM Comments WHERE Comments.user_id = User.id)'
-              ),
+              sequelize.literal('(SELECT COUNT(DISTINCT id) FROM Comments WHERE Comments.user_id = User.id)'),
               'commentCounts',
             ],
             [
@@ -103,9 +79,7 @@ const userController = {
               'followerCounts',
             ],
             [
-              sequelize.literal(
-                '(SELECT COUNT(DISTINCT id) FROM Followships WHERE Followships.follower_id = User.id)'
-              ),
+              sequelize.literal('(SELECT COUNT(DISTINCT id) FROM Followships WHERE Followships.follower_id = User.id)'),
               'followingCounts',
             ],
           ],
@@ -163,8 +137,7 @@ const userController = {
   editUser: async (req, res, next) => {
     try {
       const userId = req.params.id
-      if (Number(req.user.id) !== Number(userId))
-        throw new Error('You are not owner!')
+      if (Number(req.user.id) !== Number(userId)) throw new Error('You are not owner!')
 
       const user = await User.findByPk(userId, { raw: true })
       if (!user) throw new Error('User did not exists!')
@@ -178,17 +151,12 @@ const userController = {
     try {
       const userId = req.params.id
       const { name } = req.body
-      if (Number(req.user.id) !== Number(userId))
-        throw new Error('You are not owner!')
+      if (Number(req.user.id) !== Number(userId)) throw new Error('You are not owner!')
 
-      const [user, file] = await Promise.all([
-        User.findByPk(userId),
-        imgurFileHandler(req.file),
-      ])
+      const [user, file] = await Promise.all([User.findByPk(userId), imgurFileHandler(req.file)])
       if (!user) throw new Error('User did not exists!')
 
-      if (file?.deletehash && user.deleteHash)
-        await imgur.deleteImage(user.deleteHash)
+      if (file?.deletehash && user.deleteHash) await imgur.deleteImage(user.deleteHash)
       await user.update({
         name,
         image: file?.link || user.image,
@@ -226,8 +194,7 @@ const userController = {
       const favorite = await Favorite.findOne({
         where: { userId, restaurantId },
       })
-      if (!favorite)
-        throw new Error('You did not add the restaurant as favorite!')
+      if (!favorite) throw new Error('You did not add the restaurant as favorite!')
 
       await favorite.destroy()
 
@@ -240,10 +207,7 @@ const userController = {
     try {
       const userId = req.user.id
       const { restaurantId } = req.params
-      const [user, like] = await Promise.all([
-        User.findByPk(userId),
-        Like.findOne({ where: { userId, restaurantId } }),
-      ])
+      const [user, like] = await Promise.all([User.findByPk(userId), Like.findOne({ where: { userId, restaurantId } })])
       if (!user) throw new Error('User did not exists!')
       if (like) throw new Error('Restaurant already like!')
 
@@ -258,10 +222,7 @@ const userController = {
     try {
       const userId = req.user.id
       const { restaurantId } = req.params
-      const [user, like] = await Promise.all([
-        User.findByPk(userId),
-        Like.findOne({ where: { userId, restaurantId } }),
-      ])
+      const [user, like] = await Promise.all([User.findByPk(userId), Like.findOne({ where: { userId, restaurantId } })])
       if (!user) throw new Error('User did not exists!')
       if (!like) throw new Error('You did not like the restaurant!')
 

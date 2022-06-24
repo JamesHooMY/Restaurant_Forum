@@ -11,6 +11,7 @@ const {
 } = require('../../middleware/api-auth')
 const { apiErrorHandler } = require('../../middleware/error-handler')
 
+router.post('/signup', userController.signUp)
 router.post(
   '/signin',
   passport.authenticate('local', { session: false }),

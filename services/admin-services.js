@@ -48,7 +48,9 @@ const adminService = {
       const restaurant = await Restaurant.findByPk(restaurantId)
       if (!restaurant) throw new Error('Restaurant is not exist!')
 
-      await imgur.deleteImage(restaurant.toJSON().deleteHash)
+      if (restaurant.toJSON().deleteHash)
+        await imgur.deleteImage(restaurant.toJSON().deleteHash)
+
       const deleteRestaurant = await restaurant.destroy()
 
       return cb(null, deleteRestaurant)
