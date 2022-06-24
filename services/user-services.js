@@ -63,20 +63,9 @@ const userService = {
             'name',
             'email',
             'image',
-            [
-              sequelize.literal('(SELECT COUNT(DISTINCT id) FROM Comments WHERE Comments.user_id = User.id)'),
-              'commentCounts',
-            ],
-            [
-              sequelize.literal(
-                '(SELECT COUNT(DISTINCT id) FROM Followships WHERE Followships.following_id = User.id)'
-              ),
-              'followerCounts',
-            ],
-            [
-              sequelize.literal('(SELECT COUNT(DISTINCT id) FROM Followships WHERE Followships.follower_id = User.id)'),
-              'followingCounts',
-            ],
+            [sequelize.literal('(SELECT COUNT(DISTINCT id) FROM Comments WHERE Comments.user_id = User.id)'), 'commentCounts'],
+            [sequelize.literal('(SELECT COUNT(DISTINCT id) FROM Followships WHERE Followships.following_id = User.id)'), 'followerCounts'],
+            [sequelize.literal('(SELECT COUNT(DISTINCT id) FROM Followships WHERE Followships.follower_id = User.id)'), 'followingCounts'],
           ],
           raw: true,
           nest: true,
@@ -108,10 +97,7 @@ const userService = {
       const { name } = req.body
       if (Number(req.user.id) !== Number(userId)) throw new Error('You are not owner!')
 
-      const [user, file] = await Promise.all([
-        User.findByPk(userId, { attributes: ['id', 'name', 'email', 'image'] }),
-        imgurFileHandler(req.file),
-      ])
+      const [user, file] = await Promise.all([User.findByPk(userId, { attributes: ['id', 'name', 'email', 'image'] }), imgurFileHandler(req.file)])
       if (!user) throw new Error('User did not exists!')
 
       if (file?.deletehash && user.deleteHash) await imgur.deleteImage(user.deleteHash)
@@ -122,6 +108,21 @@ const userService = {
       })
 
       return cb(null, { user: editedUser })
+    } catch (err) {
+      cb(err)
+    }
+  },
+  addFavorite: async (req, cb) => {
+    try {
+      const userId = req.user.id
+      const { restaurantId } = req.params
+      const [user, favorite] = await Promise.all([User.findByPk(userId), Favorite.findOne({ where: { userId, restaurantId } })])
+      if (!user) throw new Error('User did not exists!')
+      if (favorite) throw new Error('Restaurant already add to favorite!')
+
+      const favoriteInfo = await Favorite.create({ userId, restaurantId })
+
+      return cb(null, { user: { id: favoriteInfo.userId }, restaurant: { id: favoriteInfo.restaurantId } })
     } catch (err) {
       cb(err)
     }

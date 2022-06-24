@@ -84,18 +84,7 @@ const userController = {
   },
   addFavorite: async (req, res, next) => {
     try {
-      const userId = req.user.id
-      const { restaurantId } = req.params
-      const [user, favorite] = await Promise.all([
-        User.findByPk(userId),
-        Favorite.findOne({ where: { userId, restaurantId } }),
-      ])
-      if (!user) throw new Error('User did not exists!')
-      if (favorite) throw new Error('Restaurant already add to favorite!')
-
-      await Favorite.create({ userId, restaurantId })
-
-      res.redirect('back')
+      userServices.addFavorite(req, (err, data) => (err ? next(err) : res.redirect('back')))
     } catch (err) {
       next(err)
     }

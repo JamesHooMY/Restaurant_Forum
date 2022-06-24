@@ -20,6 +20,10 @@ router.get('/user/:id', authenticated, userController.getUser)
 // user browse restaurants
 router.get('/restaurants', authenticated, restController.getRestaurants)
 
+//user favorite restaurants
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+
+// administrator
 router.use('/admin', authenticated, authenticatedAdmin, admin)
 router.use('/', apiErrorHandler)
 

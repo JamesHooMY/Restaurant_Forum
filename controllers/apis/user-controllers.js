@@ -54,6 +54,13 @@ const userController = {
       next(err)
     }
   },
+  addFavorite: (req, res, next) => {
+    try {
+      userServices.addFavorite(req, (err, data) => (err ? next(err) : res.status(200).json({ status: 'success', data })))
+    } catch (err) {
+      next(err)
+    }
+  },
 }
 
 module.exports = userController
