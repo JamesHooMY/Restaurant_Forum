@@ -18,6 +18,13 @@ const userController = {
       next(err)
     }
   },
+  getUsers: (req, res, next) => {
+    try {
+      userServices.getUsers(req, (err, data) => (err ? next(err) : res.json({ status: 'success', data })))
+    } catch (err) {
+      next(err)
+    }
+  },
 }
 
 module.exports = userController

@@ -12,6 +12,7 @@ const userController = {
       userServices.signUp(req, (err, data) => {
         if (err) return next(err)
         req.flash('success_messages', 'Sign up successfully!')
+
         res.redirect('/signin')
       })
     } catch (err) {
@@ -32,10 +33,7 @@ const userController = {
   },
   getUsers: async (req, res, next) => {
     try {
-      const users = await User.findAll({ raw: true })
-      if (!users) throw new Error('Users do not exists!')
-
-      return res.render('admin/users', { users })
+      userServices.getUsers(req, (err, data) => (err ? next(err) : res.render('admin/users', data)))
     } catch (err) {
       next(err)
     }

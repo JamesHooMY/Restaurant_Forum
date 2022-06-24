@@ -1,9 +1,6 @@
 const { User } = require('../models')
 const bcrypt = require('bcryptjs')
-const {
-  localFileHandler,
-  imgurFileHandler,
-} = require('../helpers/file-helpers')
+const { localFileHandler, imgurFileHandler } = require('../helpers/file-helpers')
 const imgur = require('imgur')
 
 const userService = {
@@ -25,6 +22,16 @@ const userService = {
       delete createdUser.toJSON().password
 
       return cb(null, createdUser)
+    } catch (err) {
+      cb(err)
+    }
+  },
+  getUsers: async (req, cb) => {
+    try {
+      const users = await User.findAll({ raw: true })
+      if (!users) throw new Error('Users do not exists!')
+
+      return cb(null, { users })
     } catch (err) {
       cb(err)
     }

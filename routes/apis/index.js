@@ -11,6 +11,7 @@ const {
 } = require('../../middleware/api-auth')
 const { apiErrorHandler } = require('../../middleware/error-handler')
 
+// user login
 router.post('/signup', userController.signUp)
 router.post(
   '/signin',
@@ -18,6 +19,7 @@ router.post(
   userController.signIn
 )
 
+// user browse restaurants
 router.get('/restaurants', authenticated, restController.getRestaurants)
 
 router.use('/admin', authenticated, authenticatedAdmin, admin)
