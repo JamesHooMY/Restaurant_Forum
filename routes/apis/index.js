@@ -3,6 +3,7 @@ const router = express.Router()
 
 const restController = require('../../controllers/apis/restaurant-controllers')
 const userController = require('../../controllers/apis/user-controllers')
+const topController = require('../../controllers/apis/top-controllers')
 const passport = require('../../config/passport')
 const admin = require('./modules/admin')
 const { authenticated, authenticatedAdmin } = require('../../middleware/api-auth')
@@ -31,6 +32,10 @@ router.delete('/like/:restaurantId', authenticated, userController.deleteLike)
 //user following
 router.post('/following/:userId', authenticated, userController.addFollowing)
 router.delete('/following/:userId', authenticated, userController.removeFollowing)
+
+// top list
+router.get('/top/users', authenticated, topController.getTopUsers)
+router.get('/top/restaurants', authenticated, topController.getTopRestaurants)
 
 // administrator
 router.use('/admin', authenticated, authenticatedAdmin, admin)
