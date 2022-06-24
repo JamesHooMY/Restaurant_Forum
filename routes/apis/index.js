@@ -4,6 +4,7 @@ const router = express.Router()
 const restController = require('../../controllers/apis/restaurant-controllers')
 const userController = require('../../controllers/apis/user-controllers')
 const topController = require('../../controllers/apis/top-controllers')
+const commentController = require('../../controllers/apis/comment-controllers')
 const passport = require('../../config/passport')
 const admin = require('./modules/admin')
 const { authenticated, authenticatedAdmin } = require('../../middleware/api-auth')
@@ -17,6 +18,10 @@ router.post('/signin', passport.authenticate('local', { session: false }), userC
 // user profile
 router.put('/user/:id', authenticated, upload.single('image'), userController.putUser)
 router.get('/user/:id', authenticated, userController.getUser)
+
+// user comments
+router.post('/comment', authenticated, commentController.postComment)
+router.delete('/comment/:id', authenticated, authenticatedAdmin, commentController.deleteComment)
 
 // user browse restaurants
 router.get('/restaurant/:id', authenticated, restController.getRestaurant)
