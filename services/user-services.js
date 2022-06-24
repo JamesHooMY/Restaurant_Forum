@@ -21,7 +21,7 @@ const userService = {
       })
       delete createdUser.toJSON().password
 
-      return cb(null, createdUser)
+      return cb(null, { user: createdUser })
     } catch (err) {
       cb(err)
     }
@@ -46,7 +46,7 @@ const userService = {
 
       const updatedUser = await user.update({ isAdmin: !user.isAdmin })
 
-      return cb(null, { users: updatedUser })
+      return cb(null, { user: updatedUser })
     } catch (err) {
       cb(err)
     }

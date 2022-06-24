@@ -34,7 +34,15 @@ const userController = {
   },
   getUser: (req, res, next) => {
     try {
-      userServices.getUser(req, (err, data) => (err ? next(err) : res.status(200).json({ status: 'success', data })))
+      userServices.getUser(req, (err, data) => {
+        if (err) return next(err)
+
+        // data.user = data.queryUser
+        // delete data.queryUser
+        delete Object.assign(data, { user: data.queryUser })['queryUser']
+
+        return res.status(200).json({ status: 'success', data })
+      })
     } catch (err) {
       next(err)
     }
