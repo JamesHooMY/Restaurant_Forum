@@ -72,22 +72,12 @@ const userController = {
   },
   putUser: async (req, res, next) => {
     try {
-      const userId = req.params.id
-      const { name } = req.body
-      if (Number(req.user.id) !== Number(userId)) throw new Error('You are not owner!')
+      userServices.putUser(req, (err, data) => {
+        if (err) return next(err)
 
-      const [user, file] = await Promise.all([User.findByPk(userId), imgurFileHandler(req.file)])
-      if (!user) throw new Error('User did not exists!')
-
-      if (file?.deletehash && user.deleteHash) await imgur.deleteImage(user.deleteHash)
-      await user.update({
-        name,
-        image: file?.link || user.image,
-        delehash: file?.deletehash || user.deleteHash,
+        req.flash('success_messages', 'User profile was updated successfully!')
+        return res.redirect(`/user/${data.user.id}`)
       })
-
-      req.flash('success_messages', 'User profile was updated successfully!')
-      return res.redirect(`/user/${userId}`)
     } catch (err) {
       next(err)
     }

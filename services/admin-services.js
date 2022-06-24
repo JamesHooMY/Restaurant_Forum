@@ -1,8 +1,5 @@
 const { Restaurant, Category } = require('../models')
-const {
-  localFileHandler,
-  imgurFileHandler,
-} = require('../helpers/file-helpers')
+const { localFileHandler, imgurFileHandler } = require('../helpers/file-helpers')
 const imgur = require('imgur')
 
 const adminService = {
@@ -20,8 +17,7 @@ const adminService = {
   },
   postRestaurant: async (req, cb) => {
     try {
-      const { name, tel, address, openingHours, description, categoryId } =
-        req.body
+      const { name, tel, address, openingHours, description, categoryId } = req.body
       if (!name) throw new Error('Restaurant name is required!')
 
       const file = await imgurFileHandler(req.file) // multer process image in to "req.file"
@@ -48,8 +44,7 @@ const adminService = {
       const restaurant = await Restaurant.findByPk(restaurantId)
       if (!restaurant) throw new Error('Restaurant is not exist!')
 
-      if (restaurant.toJSON().deleteHash)
-        await imgur.deleteImage(restaurant.toJSON().deleteHash)
+      if (restaurant.toJSON().deleteHash) await imgur.deleteImage(restaurant.toJSON().deleteHash)
 
       const deleteRestaurant = await restaurant.destroy()
 

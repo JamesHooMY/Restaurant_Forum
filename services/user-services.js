@@ -102,5 +102,29 @@ const userService = {
       cb(err)
     }
   },
+  putUser: async (req, cb) => {
+    try {
+      const userId = req.params.id
+      const { name } = req.body
+      if (Number(req.user.id) !== Number(userId)) throw new Error('You are not owner!')
+
+      const [user, file] = await Promise.all([
+        User.findByPk(userId, { attributes: ['id', 'name', 'email', 'image'] }),
+        imgurFileHandler(req.file),
+      ])
+      if (!user) throw new Error('User did not exists!')
+
+      if (file?.deletehash && user.deleteHash) await imgur.deleteImage(user.deleteHash)
+      const editedUser = await user.update({
+        name,
+        image: file?.link || user.image,
+        delehash: file?.deletehash || user.deleteHash,
+      })
+
+      return cb(null, { user: editedUser })
+    } catch (err) {
+      cb(err)
+    }
+  },
 }
 module.exports = userService
