@@ -61,6 +61,13 @@ const userController = {
       next(err)
     }
   },
+  deleteFavorite: (req, res, next) => {
+    try {
+      userServices.deleteFavorite(req, (err, data) => (err ? next(err) : res.status(200).json({ status: 'success', data })))
+    } catch (err) {
+      next(err)
+    }
+  },
 }
 
 module.exports = userController

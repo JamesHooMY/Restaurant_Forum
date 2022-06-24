@@ -120,9 +120,25 @@ const userService = {
       if (!user) throw new Error('User did not exists!')
       if (favorite) throw new Error('Restaurant already add to favorite!')
 
-      const favoriteInfo = await Favorite.create({ userId, restaurantId })
+      const addedFavorite = await Favorite.create({ userId, restaurantId })
 
-      return cb(null, { user: { id: favoriteInfo.userId }, restaurant: { id: favoriteInfo.restaurantId } })
+      return cb(null, { user: { id: addedFavorite.userId }, restaurant: { id: addedFavorite.restaurantId } })
+    } catch (err) {
+      cb(err)
+    }
+  },
+  deleteFavorite: async (req, cb) => {
+    try {
+      const userId = req.user.id
+      const { restaurantId } = req.params
+      const favorite = await Favorite.findOne({
+        where: { userId, restaurantId },
+      })
+      if (!favorite) throw new Error('You did not add the restaurant as favorite!')
+
+      const deletedFavorite = await favorite.destroy()
+
+      return cb(null, { user: { id: deletedFavorite.userId }, restaurant: { id: deletedFavorite.restaurantId } })
     } catch (err) {
       cb(err)
     }

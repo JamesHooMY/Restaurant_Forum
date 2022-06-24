@@ -91,16 +91,7 @@ const userController = {
   },
   deleteFavorite: async (req, res, next) => {
     try {
-      const userId = req.user.id
-      const { restaurantId } = req.params
-      const favorite = await Favorite.findOne({
-        where: { userId, restaurantId },
-      })
-      if (!favorite) throw new Error('You did not add the restaurant as favorite!')
-
-      await favorite.destroy()
-
-      res.redirect('back')
+      userServices.deleteFavorite(req, (err, data) => (err ? next(err) : res.redirect('back')))
     } catch (err) {
       next(err)
     }

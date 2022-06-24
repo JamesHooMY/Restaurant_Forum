@@ -22,6 +22,7 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 
 //user favorite restaurants
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.deleteFavorite)
 
 // administrator
 router.use('/admin', authenticated, authenticatedAdmin, admin)
