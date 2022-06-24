@@ -98,30 +98,14 @@ const userController = {
   },
   addLike: async (req, res, next) => {
     try {
-      const userId = req.user.id
-      const { restaurantId } = req.params
-      const [user, like] = await Promise.all([User.findByPk(userId), Like.findOne({ where: { userId, restaurantId } })])
-      if (!user) throw new Error('User did not exists!')
-      if (like) throw new Error('Restaurant already like!')
-
-      await Like.create({ userId, restaurantId })
-
-      res.redirect('back')
+      userServices.addLike(req, (err, data) => err(err ? next(err) : res.redirect('back')))
     } catch (err) {
       next(err)
     }
   },
   deleteLike: async (req, res, next) => {
     try {
-      const userId = req.user.id
-      const { restaurantId } = req.params
-      const [user, like] = await Promise.all([User.findByPk(userId), Like.findOne({ where: { userId, restaurantId } })])
-      if (!user) throw new Error('User did not exists!')
-      if (!like) throw new Error('You did not like the restaurant!')
-
-      await like.destroy()
-
-      res.redirect('back')
+      userServices.deleteLike(req, (err, data) => err(err ? next(err) : res.redirect('back')))
     } catch (err) {
       next(err)
     }

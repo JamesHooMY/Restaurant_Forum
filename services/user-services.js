@@ -143,5 +143,35 @@ const userService = {
       cb(err)
     }
   },
+  addLike: async (req, cb) => {
+    try {
+      const userId = req.user.id
+      const { restaurantId } = req.params
+      const [user, like] = await Promise.all([User.findByPk(userId), Like.findOne({ where: { userId, restaurantId } })])
+      if (!user) throw new Error('User did not exists!')
+      if (like) throw new Error('Restaurant already like!')
+
+      const addedLike = await Like.create({ userId, restaurantId })
+
+      return cb(null, { user: { id: addedLike.userId }, restaurant: { id: addedLike.restaurantId } })
+    } catch (err) {
+      cb(err)
+    }
+  },
+  deleteLike: async (req, cb) => {
+    try {
+      const userId = req.user.id
+      const { restaurantId } = req.params
+      const [user, like] = await Promise.all([User.findByPk(userId), Like.findOne({ where: { userId, restaurantId } })])
+      if (!user) throw new Error('User did not exists!')
+      if (!like) throw new Error('You did not like the restaurant!')
+
+      const deletedLike = await like.destroy()
+
+      return cb(null, { user: { id: deletedLike.userId }, restaurant: { id: deletedLike.restaurantId } })
+    } catch (err) {
+      cb(err)
+    }
+  },
 }
 module.exports = userService
