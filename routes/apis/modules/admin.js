@@ -9,8 +9,10 @@ router.get('/users', userController.getUsers)
 router.patch('/user/:id', userController.patchUser)
 
 // admin control restaurants
-router.delete('/restaurants/:id', adminController.deleteRestaurant)
-router.get('/restaurants', adminController.getRestaurants)
+router.get('/restaurant/:id', adminController.getRestaurant)
+router.put('/restaurant/:id', upload.single('image'), adminController.putRestaurant)
+router.delete('/restaurant/:id', adminController.deleteRestaurant)
 router.post('/restaurant', upload.single('image'), adminController.postRestaurant)
+router.get('/restaurants', adminController.getRestaurants)
 
 module.exports = router

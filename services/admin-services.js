@@ -15,6 +15,17 @@ const adminService = {
       cb(err)
     }
   },
+  getRestaurant: async (req, cb) => {
+    try {
+      const restaurantId = req.params.id
+      const restaurant = await Restaurant.findByPk(restaurantId, { raw: true })
+      if (!restaurant) throw new Error('Restaurant is not exist!')
+
+      return cb(null, { restaurant })
+    } catch (err) {
+      cb(err)
+    }
+  },
   postRestaurant: async (req, cb) => {
     try {
       const { name, tel, address, openingHours, description, categoryId } = req.body
@@ -37,6 +48,34 @@ const adminService = {
       cb(err)
     }
   },
+  putRestaurant: async (req, cb) => {
+    try {
+      const restaurantId = req.params.id
+
+      const { name, tel, address, openingHours, description, categoryId } = req.body
+      if (!name) throw new Error('Restaurant name is required!')
+
+      const [restaurant, file] = await Promise.all([Restaurant.findByPk(restaurantId), imgurFileHandler(req.file)])
+      if (!restaurant) throw new Error('Restaurant is not exist!')
+
+      if (file?.deletehash && restaurant.deleteHash) await imgur.deleteImage(restaurant.deleteHash)
+
+      const editedRestaurant = await restaurant.update({
+        name,
+        tel,
+        address,
+        openingHours,
+        description,
+        image: file?.link || restaurant.image,
+        deleteHash: file?.deletehash || restaurant.deleteHash,
+        categoryId,
+      })
+
+      return cb(null, editedRestaurant)
+    } catch (err) {
+      cb(err)
+    }
+  },
   deleteRestaurant: async (req, cb) => {
     try {
       const restaurantId = req.params.id
@@ -46,9 +85,9 @@ const adminService = {
 
       if (restaurant.toJSON().deleteHash) await imgur.deleteImage(restaurant.toJSON().deleteHash)
 
-      const deleteRestaurant = await restaurant.destroy()
+      const deletedRestaurant = await restaurant.destroy()
 
-      return cb(null, deleteRestaurant)
+      return cb(null, deletedRestaurant)
     } catch (err) {
       cb(err)
     }

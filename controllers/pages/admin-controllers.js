@@ -1,16 +1,11 @@
 const { Restaurant, Category } = require('../../models')
-const {
-  localFileHandler,
-  imgurFileHandler,
-} = require('../../helpers/file-helpers')
+const { localFileHandler, imgurFileHandler } = require('../../helpers/file-helpers')
 const adminServices = require('../../services/admin-services')
 const imgur = require('imgur')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
-    adminServices.getRestaurants(req, (err, data) =>
-      err ? next(err) : res.render('admin/restaurants', data)
-    )
+    adminServices.getRestaurants(req, (err, data) => (err ? next(err) : res.render('admin/restaurants', data)))
   },
   createRestaurant: async (req, res, next) => {
     try {
@@ -41,10 +36,7 @@ const adminController = {
     try {
       const restaurantId = req.params.id
 
-      const [restaurant, categories] = await Promise.all([
-        Restaurant.findByPk(restaurantId, { raw: true }),
-        Category.findAll({ raw: true }),
-      ])
+      const [restaurant, categories] = await Promise.all([Restaurant.findByPk(restaurantId, { raw: true }), Category.findAll({ raw: true })])
       if (!restaurant) throw new Error('Restaurant is not exist!')
 
       return res.render('admin/edit-restaurant', { restaurant, categories })
@@ -54,37 +46,11 @@ const adminController = {
   },
   putRestaurant: async (req, res, next) => {
     try {
-      const restaurantId = req.params.id
-
-      const { name, tel, address, openingHours, description, categoryId } =
-        req.body
-      if (!name) throw new Error('Restaurant name is required!')
-
-      const [restaurant, file] = await Promise.all([
-        Restaurant.findByPk(restaurantId),
-        imgurFileHandler(req.file),
-      ])
-      if (!restaurant) throw new Error('Restaurant is not exist!')
-
-      if (file?.deletehash && restaurant.deleteHash)
-        await imgur.deleteImage(restaurant.deleteHash)
-      // file?.deletehash && restaurant.deleteHash
-      //   ? await imgur.deleteImage(restaurant.deleteHash)
-      //   : null
-
-      await restaurant.update({
-        name,
-        tel,
-        address,
-        openingHours,
-        description,
-        image: file?.link || restaurant.image,
-        deleteHash: file?.deletehash || restaurant.deleteHash,
-        categoryId,
+      adminServices.putRestaurant(req, (err, data) => {
+        if (err) return next(err)
+        req.flash('success_messages', 'restaurant was successfully edited!')
+        return res.redirect('/admin/restaurants')
       })
-
-      req.flash('success_messages', 'restaurant was successfully edited!')
-      return res.redirect('/admin/restaurants')
     } catch (err) {
       next(err)
     }

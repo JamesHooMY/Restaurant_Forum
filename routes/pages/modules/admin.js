@@ -20,18 +20,10 @@ router.get('/categories', categoryController.getCategories)
 
 // admin control restaurants
 router.get('/restaurant/create', adminController.createRestaurant)
-router.post(
-  '/restaurant',
-  upload.single('image'),
-  adminController.postRestaurant
-)
+router.post('/restaurant', upload.single('image'), adminController.postRestaurant)
 router.get('/restaurant/:id', adminController.getRestaurant)
 router.get('/restaurant/:id/edit', adminController.editRestaurant)
-router.put(
-  '/restaurant/:id',
-  upload.single('image'),
-  adminController.putRestaurant
-)
+router.put('/restaurant/:id', upload.single('image'), adminController.putRestaurant)
 router.delete('/restaurant/:id', adminController.deleteRestaurant)
 router.get('/restaurants', adminController.getRestaurants)
 router.get('/', (req, res) => res.redirect('/admin/restaurants'))
