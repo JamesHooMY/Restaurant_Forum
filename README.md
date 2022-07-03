@@ -46,6 +46,7 @@ A restaurant forum application provides users to query, comment, add favorite, a
           
 9.   Start exploring >>> [Restaurant Forum](http://localhost:3000/) <<< on your browser.
 
+
 # Continue to develop Restaurant Forum
 *   Make sure that you have already installed [Node.js](https://nodejs.org/en/)
 1.   Don't forget to install [nodemon](https://www.npmjs.com/package/nodemon) to make your development process smoother.
@@ -61,6 +62,9 @@ A restaurant forum application provides users to query, comment, add favorite, a
           nodemon app.js
           
 3.   Start exploring >>> [Restaurant Forum](http://localhost:3000/) <<< on your browser.
+
+# API Document
+* If you want to develop with Postman, please find the detail from the [API document](https://documenter.getpostman.com/view/20690974/UzBsJ4Xy).
 
 ***
 ## Seed user accounts for testing service
