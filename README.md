@@ -46,7 +46,7 @@ A restaurant forum application provides users to query, comment, add favorite, a
           
 9.   Start exploring >>> [Restaurant Forum](http://localhost:3000/) <<< on your browser.
 
-# Continue to develop Expense Tracker
+# Continue to develop Restaurant Forum
 *   Make sure that you have already installed [Node.js](https://nodejs.org/en/)
 1.   Don't forget to install [nodemon](https://www.npmjs.com/package/nodemon) to make your development process smoother.
         
@@ -60,7 +60,7 @@ A restaurant forum application provides users to query, comment, add favorite, a
           
           nodemon app.js
           
-3.   Start exploring >>> [Expense Tracker](http://localhost:3000/) <<< on your browser.
+3.   Start exploring >>> [Restaurant Forum](http://localhost:3000/) <<< on your browser.
 
 ***
 ## Seed user accounts for testing service
@@ -75,8 +75,7 @@ A restaurant forum application provides users to query, comment, add favorite, a
 ***
 # Features
 1. Register your own account or using your facebook/google account directly to start create your expense list
-2. All expenses will be summaried on the main page, you can edit or delete them.
-3. Search the expenses by categories or months.
+2. All restaurants can be easily search by clicking the types of cuisine.
           
 ***
 ## Login page
