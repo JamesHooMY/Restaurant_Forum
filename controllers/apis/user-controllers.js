@@ -37,8 +37,6 @@ const userController = {
       userServices.getUser(req, (err, data) => {
         if (err) return next(err)
 
-        // data.user = data.queryUser
-        // delete data.queryUser
         delete Object.assign(data, { user: data.queryUser })['queryUser']
 
         return res.status(200).json({ status: 'success', data })
