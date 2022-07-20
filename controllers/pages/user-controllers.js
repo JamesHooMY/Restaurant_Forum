@@ -26,10 +26,14 @@ const userController = {
     req.flash('success_messages', 'Sign in successfully!')
     res.redirect('/restaurants')
   },
-  logout: (req, res) => {
-    req.flash('success_messages', 'Logout successfully!')
-    req.logout()
-    res.redirect('/signin')
+  logout: (req, res, next) => {
+    req.logout((err) => {
+      if (err) {
+        return next(err)
+      }
+      req.flash('success_messages', 'Logout successfully!')
+      res.redirect('/signin')
+    })
   },
   getUsers: async (req, res, next) => {
     try {

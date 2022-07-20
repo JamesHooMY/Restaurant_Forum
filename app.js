@@ -5,7 +5,19 @@ const express = require('express')
 const methodOverride = require('method-override')
 const flash = require('connect-flash')
 const session = require('express-session')
+const RedisStore = require('connect-redis')(session)
 const path = require('path')
+
+const Redis = require('ioredis')
+const redisClient = new Redis({
+  port: process.env.REDIS_SERVER_PORT,
+  host: process.env.REDIS_HOST,
+  password: process.env.REDIS_PASSWORD,
+  db: 0,
+  tls: {
+    host: process.env.REDIS_HOST,
+  },
+})
 
 const { create } = require('express-handlebars')
 const { getUser } = require('./helpers/auth-helpers')
@@ -31,6 +43,7 @@ app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use(methodOverride('_method'))
 app.use(
   session({
+    store: new RedisStore({ client: redisClient }),
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
