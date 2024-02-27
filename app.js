@@ -14,9 +14,9 @@ const redisClient = new Redis({
   host: process.env.REDIS_HOST,
   password: process.env.REDIS_PASSWORD,
   db: 0,
-  tls: {
-    host: process.env.REDIS_HOST,
-  },
+  // tls: {
+  //   host: process.env.REDIS_HOST,
+  // },
 })
 
 const { create } = require('express-handlebars')

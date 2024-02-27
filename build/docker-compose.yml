@@ -1,0 +1,47 @@
+version: '3.1'
+
+services:
+    mysql-master:
+        image: mysql:latest
+        container_name: mysql-master
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: root_password
+            MYSQL_DATABASE: forum
+            # MYSQL_USER: user
+            # MYSQL_PASSWORD: password
+        ports:
+            - '3306:3306'
+        networks:
+            - mynetwork
+        # volumes:
+        #     - ./mysql-master-data:/var/lib/mysql
+
+    mysql-slave:
+        image: mysql:latest
+        container_name: mysql-slave
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: root_password
+            MYSQL_DATABASE: forum
+            # MYSQL_USER: user
+            # MYSQL_PASSWORD: password
+            MYSQL_MASTER_HOST: mysql-master
+            MYSQL_MASTER_PORT: 3306
+            MYSQL_MASTER_ROOT_PASSWORD: root_password
+        networks:
+            - mynetwork
+        # volumes:
+        #     - ./mysql-slave-data:/var/lib/mysql
+
+    redis:
+        image: 'redis:latest'
+        ports:
+            - '6379:6379'
+
+# volumes:
+#     mysql-master-data:
+#     mysql-slave-data:
+
+networks:
+    mynetwork:
